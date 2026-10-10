@@ -50,25 +50,24 @@
       font-family: 'Prompt', 'Sarabun', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-    /* Smooth slide & fade animations when changing steps */
     @keyframes stepSlideNext {
       0% {
         opacity: 0.25;
-        transform: translateX(18px) scale(0.99);
+        transform: translateX(18px);
       }
       100% {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform: translateX(0);
       }
     }
     @keyframes stepSlidePrev {
       0% {
         opacity: 0.25;
-        transform: translateX(-18px) scale(0.99);
+        transform: translateX(-18px);
       }
       100% {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform: translateX(0);
       }
     }
     @keyframes viewFadeIn {
@@ -95,10 +94,10 @@
 <body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-dvh flex flex-col transition-colors duration-200">
 
   <!-- =============================================================== -->
-  <!-- TOP HEADER BAR (Compact so Step Viewer fits 100% on 1 screen)   -->
+  <!-- TOP HEADER BAR                                                  -->
   <!-- =============================================================== -->
   <header class="shrink-0 bg-white/95 backdrop-blur-md border-b-2 border-slate-200 shadow-sm dark:bg-slate-900/95 dark:border-slate-800 z-30">
-    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
       
       <!-- Left: Brand / Home Button -->
       <button
@@ -158,15 +157,15 @@
   </main>
 
   <!-- =============================================================== -->
-  <!-- 2. STEP VIEWER: FITS 100% IN 1 SCREEN (NO SCROLLING NEEDED!)    -->
+  <!-- 2. STEP VIEWER: LEFT/RIGHT GIANT BUTTONS + MOUSE WHEEL ZOOM     -->
   <!-- =============================================================== -->
-  <main id="step-viewer" class="hidden flex-1 flex flex-col max-w-6xl w-full mx-auto px-2 sm:px-6 py-2 sm:py-3 overflow-hidden">
+  <main id="step-viewer" class="hidden flex-1 flex flex-col max-w-7xl w-full mx-auto px-2 sm:px-5 py-2 sm:py-3 overflow-hidden">
     
-    <!-- Top Instruction Banner (Compact, Bold, High Contrast) -->
+    <!-- Top Instruction Banner -->
     <div id="step-instruction-box" class="shrink-0 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 shadow-sm mb-2">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0 flex-1">
-          <span id="step-badge-counter" class="px-3 py-1 rounded-xl bg-indigo-600 text-white text-sm sm:text-lg font-extrabold shrink-0">
+          <span id="step-badge-counter" class="px-3.5 py-1 rounded-xl bg-indigo-600 text-white text-sm sm:text-lg font-extrabold shrink-0">
             ภาพที่ 1 / 11
           </span>
           <h2 id="step-title-text" class="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white truncate">
@@ -196,101 +195,94 @@
       </p>
     </div>
 
-    <!-- Center Image Box (Automatically scales to fit remaining height so buttons NEVER go off-screen) -->
-    <div
-      id="step-image-wrapper"
-      class="flex-1 min-h-0 relative bg-slate-200/90 dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl flex items-center justify-center p-1.5 sm:p-2.5 cursor-pointer overflow-hidden group"
-      title="แตะที่รูปเพื่อขยายเต็มจอ"
-    >
-      <img
-        id="step-main-image"
-        src=""
-        alt=""
-        class="max-h-full max-w-full w-auto h-auto object-contain rounded-xl bg-white shadow-sm select-none"
-      />
-      <div class="absolute bottom-2.5 right-2.5 px-3 py-1.5 rounded-xl bg-slate-900/80 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 pointer-events-none">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-        </svg>
-        <span>แตะรูปเพื่อขยาย</span>
-      </div>
-    </div>
-
-    <!-- Bottom Navigation Bar (ALWAYS VISIBLE WITHOUT SCROLLING!) -->
-    <div class="shrink-0 mt-2 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl p-2.5 sm:p-3.5 shadow-md space-y-2.5">
+    <!-- ============================================================= -->
+    <!-- MIDDLE ROW: [GIANT PREV BTN] + [ZOOMABLE IMAGE] + [GIANT NEXT]-->
+    <!-- ============================================================= -->
+    <div class="flex-1 min-h-0 flex items-stretch gap-2 sm:gap-3">
       
-      <!-- Row 1: Giant Previous & Next Buttons -->
-      <div class="grid grid-cols-2 gap-2.5 sm:gap-4">
-        <button
-          type="button"
-          id="btn-prev-step"
-          class="h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold border-2 transition active:scale-95 flex items-center justify-center gap-2"
-        >
-          <!-- Populated dynamically -->
-        </button>
+      <!-- LEFT SIDE: GIANT PREVIOUS BUTTON -->
+      <button
+        type="button"
+        id="btn-prev-step"
+        class="w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none"
+      >
+        <!-- Populated dynamically -->
+      </button>
 
-        <button
-          type="button"
-          id="btn-next-step"
-          class="h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold transition active:scale-95 flex items-center justify-center gap-2"
+      <!-- CENTER: INTERACTIVE MOUSE-ZOOMABLE IMAGE VIEWPORT -->
+      <div
+        id="step-image-viewport"
+        class="flex-1 min-w-0 min-h-0 relative bg-slate-200/90 dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl flex items-center justify-center p-1.5 sm:p-2 overflow-hidden select-none cursor-zoom-in"
+      >
+        <div
+          id="step-zoom-layer"
+          class="w-full h-full flex items-center justify-center transition-transform duration-75 ease-out origin-center"
         >
-          <!-- Populated dynamically -->
-        </button>
-      </div>
+          <img
+            id="step-main-image"
+            src=""
+            alt=""
+            draggable="false"
+            class="max-h-full max-w-full w-auto h-auto object-contain rounded-xl bg-white shadow-sm select-none pointer-events-none"
+          />
+        </div>
 
-      <!-- Row 2: Direct Step Number Buttons (1 2 3 ... 11) -->
-      <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-        <span class="text-xs sm:text-base font-extrabold text-slate-700 dark:text-slate-300 mr-1">
-          กดเลือกหมายเลขภาพโดยตรง:
-        </span>
-        <div id="step-number-pills" class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
-          <!-- Populated dynamically -->
+        <!-- Floating Zoom Controls Bar (Bottom Right inside Image) -->
+        <div class="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 bg-slate-900/90 text-white px-2.5 py-1.5 rounded-xl shadow-lg border border-slate-700">
+          <span class="hidden lg:inline text-xs font-bold text-slate-300 mr-1">
+            หมุนลูกกลิ้งเมาส์เพื่อซูม:
+          </span>
+          <button
+            type="button"
+            id="btn-zoom-out"
+            class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
+            title="ซูมออก"
+          >
+            −
+          </button>
+          <button
+            type="button"
+            id="btn-zoom-reset"
+            class="px-2.5 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm font-extrabold text-amber-300 flex items-center justify-center active:scale-95 transition"
+            title="คลิกเพื่อรีเซ็ตขนาดภาพ 100%"
+          >
+            100%
+          </button>
+          <button
+            type="button"
+            id="btn-zoom-in"
+            class="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
+            title="ซูมเข้า"
+          >
+            +
+          </button>
         </div>
       </div>
 
+      <!-- RIGHT SIDE: GIANT NEXT / FINISH BUTTON -->
+      <button
+        type="button"
+        id="btn-next-step"
+        class="w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none"
+      >
+        <!-- Populated dynamically -->
+      </button>
+
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- BOTTOM BAR: DIRECT STEP NUMBER BUTTONS (1 2 3 ... 11)         -->
+    <!-- ============================================================= -->
+    <div class="shrink-0 mt-2 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl px-3 py-2 sm:py-2.5 shadow-sm flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+      <span class="text-xs sm:text-base font-extrabold text-slate-700 dark:text-slate-300 mr-1">
+        กดเลือกหมายเลขภาพโดยตรง:
+      </span>
+      <div id="step-number-pills" class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
+        <!-- Populated dynamically -->
+      </div>
     </div>
 
   </main>
-
-  <!-- ================================================================= -->
-  <!-- FULL-SCREEN IMAGE ZOOM MODAL                                      -->
-  <!-- ================================================================= -->
-  <div
-    id="lightbox-backdrop"
-    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-2 sm:p-5"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div
-      id="lightbox-container"
-      class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-6xl shadow-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 flex flex-col max-h-[96vh]"
-    >
-      <div class="px-4 sm:px-6 py-3.5 border-b-2 border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900">
-        <h3 id="lightbox-title" class="text-base sm:text-2xl font-extrabold text-slate-900 dark:text-white truncate">
-          ภาพขยาย
-        </h3>
-        <button
-          id="btn-close-lightbox"
-          type="button"
-          class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm sm:text-lg font-extrabold active:scale-95 transition inline-flex items-center gap-1.5 shrink-0"
-        >
-          <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-          <span>ปิดภาพขยาย</span>
-        </button>
-      </div>
-      <div class="p-2 sm:p-4 bg-slate-950 flex-1 overflow-auto flex items-center justify-center">
-        <img
-          id="lightbox-image"
-          src=""
-          alt=""
-          class="w-full max-h-[82vh] object-contain select-none"
-        />
-      </div>
-    </div>
-  </div>
 
   <!-- ================================================================= -->
   <!-- BIG READABLE TOAST NOTIFICATION                                   -->

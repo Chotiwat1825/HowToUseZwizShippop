@@ -1,6 +1,7 @@
 /**
  * คู่มือแนวทางการใช้งาน Zwiz & Shippop สำหรับพนักงานขาย (ร้านมรุกข)
- * ออกแบบให้พอดี 1 หน้าจอ (ไม่ต้องเลื่อนลงไปหาปุ่ม) ตัวหนังสือใหญ่หนา ปุ่มใหญ่ สมูททุกการกด
+ * - ปุ่ม "ก่อนหน้า" และ "ถัดไป" ขนาดใหญ่อยู่ด้านซ้าย-ขวาของภาพ กดง่ายไม่ต้องเลื่อนจอ
+ * - รองรับการใช้ลูกกลิ้งเมาส์ซูมเข้า-ออก (Mouse Wheel Zoom) + คลิกลากเลื่อนดูภาพ (Drag Pan) + ดับเบิลคลิกซูม
  */
 
 const MANUAL_CATEGORIES = [
@@ -291,14 +292,22 @@ const MANUAL_CATEGORIES = [
 ];
 
 // ============================================================================
-// Application State
+// Application & Zoom State
 // ============================================================================
 const state = {
-  activeCategoryId: null, // null = หน้าแรก, string = หน้าดูขั้นตอนพอดีจอ
-  activeSlideIndex: 0,    // เริ่มที่ภาพที่ 1 เสมอ (index 0)
-  lightboxOpen: false,
+  activeCategoryId: null,
+  activeSlideIndex: 0,
   toastTimer: null,
   preloadedCategories: {}
+};
+
+const zoomState = {
+  scale: 1,
+  panX: 0,
+  panY: 0,
+  isDragging: false,
+  startX: 0,
+  startY: 0
 };
 
 // ============================================================================
@@ -307,9 +316,9 @@ const state = {
 const ICONS = {
   sun: `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   moon: `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
-  arrowLeft: `<svg class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
-  arrowRight: `<svg class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
-  check: `<svg class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+  arrowLeftBig: `<svg class="w-8 h-8 sm:w-12 sm:h-12 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  arrowRightBig: `<svg class="w-8 h-8 sm:w-12 sm:h-12 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+  checkBig: `<svg class="w-8 h-8 sm:w-12 sm:h-12 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
 };
 
 function getNumberBoxStyle(color) {
@@ -326,7 +335,135 @@ function getNumberBoxStyle(color) {
 }
 
 // ============================================================================
-// Preload Images for Instant Zero-Lag Transitions
+// Interactive Mouse Wheel Zoom & Drag-Pan Engine
+// ============================================================================
+function applyZoomTransform(animate = true) {
+  const zoomLayer = document.getElementById('step-zoom-layer');
+  const viewport = document.getElementById('step-image-viewport');
+  const resetBtn = document.getElementById('btn-zoom-reset');
+  if (!zoomLayer || !viewport) return;
+
+  if (animate) {
+    zoomLayer.classList.add('transition-transform', 'duration-100');
+  } else {
+    zoomLayer.classList.remove('transition-transform', 'duration-100');
+  }
+
+  zoomLayer.style.transform = `translate3d(${zoomState.panX}px, ${zoomState.panY}px, 0) scale(${zoomState.scale})`;
+
+  if (resetBtn) {
+    resetBtn.textContent = `${Math.round(zoomState.scale * 100)}%`;
+  }
+
+  if (zoomState.scale > 1) {
+    viewport.classList.remove('cursor-zoom-in');
+    viewport.classList.add(zoomState.isDragging ? 'cursor-grabbing' : 'cursor-grab');
+  } else {
+    viewport.classList.remove('cursor-grab', 'cursor-grabbing');
+    viewport.classList.add('cursor-zoom-in');
+  }
+}
+
+function resetZoom(animate = true) {
+  zoomState.scale = 1;
+  zoomState.panX = 0;
+  zoomState.panY = 0;
+  zoomState.isDragging = false;
+  applyZoomTransform(animate);
+}
+
+function zoomByStep(delta, clientX = null, clientY = null) {
+  const viewport = document.getElementById('step-image-viewport');
+  const prevScale = zoomState.scale;
+  const nextScale = Math.min(4, Math.max(1, +(prevScale + delta).toFixed(2)));
+
+  if (nextScale === prevScale) return;
+
+  if (nextScale === 1) {
+    resetZoom(true);
+    return;
+  }
+
+  // If zooming toward mouse pointer, adjust pan so the point under cursor stays steady
+  if (viewport && clientX !== null && clientY !== null) {
+    const rect = viewport.getBoundingClientRect();
+    const offsetX = clientX - (rect.left + rect.width / 2);
+    const offsetY = clientY - (rect.top + rect.height / 2);
+    const ratio = nextScale / prevScale;
+    zoomState.panX = offsetX - (offsetX - zoomState.panX) * ratio;
+    zoomState.panY = offsetY - (offsetY - zoomState.panY) * ratio;
+  }
+
+  zoomState.scale = nextScale;
+  applyZoomTransform(true);
+}
+
+function setupMouseZoomAndPan() {
+  const viewport = document.getElementById('step-image-viewport');
+  if (!viewport) return;
+
+  // 1) Mouse Wheel Zoom In / Out
+  viewport.addEventListener(
+    'wheel',
+    (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.25 : -0.25;
+      zoomByStep(delta, e.clientX, e.clientY);
+    },
+    { passive: false }
+  );
+
+  // 2) Double Click to Toggle Zoom 2.2x / 1.0x
+  viewport.addEventListener('dblclick', (e) => {
+    if (e.target.closest('button')) return;
+    if (zoomState.scale > 1) {
+      resetZoom(true);
+    } else {
+      zoomByStep(1.2, e.clientX, e.clientY);
+    }
+  });
+
+  // 3) Mouse Drag to Pan when zoomed in
+  viewport.addEventListener('mousedown', (e) => {
+    if (e.button !== 0 || e.target.closest('button')) return;
+    if (zoomState.scale <= 1) return;
+
+    zoomState.isDragging = true;
+    zoomState.startX = e.clientX - zoomState.panX;
+    zoomState.startY = e.clientY - zoomState.panY;
+    applyZoomTransform(false);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!zoomState.isDragging) return;
+    zoomState.panX = e.clientX - zoomState.startX;
+    zoomState.panY = e.clientY - zoomState.startY;
+    applyZoomTransform(false);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!zoomState.isDragging) return;
+    zoomState.isDragging = false;
+    applyZoomTransform(true);
+  });
+
+  // 4) Zoom Control Buttons (+ / - / 100%)
+  document.getElementById('btn-zoom-in')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomByStep(0.35);
+  });
+  document.getElementById('btn-zoom-out')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomByStep(-0.35);
+  });
+  document.getElementById('btn-zoom-reset')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    resetZoom(true);
+  });
+}
+
+// ============================================================================
+// Preload Images
 // ============================================================================
 function preloadCategoryImages(category) {
   if (!category || state.preloadedCategories[category.id]) return;
@@ -398,6 +535,7 @@ async function copyText(text) {
 function openHomeList(pushHash = true) {
   state.activeCategoryId = null;
   state.activeSlideIndex = 0;
+  resetZoom(false);
   if (pushHash && window.location.hash) {
     history.pushState(null, '', window.location.pathname + window.location.search);
   }
@@ -411,7 +549,8 @@ function openTopicAtFirstStep(categoryId, pushHash = true) {
 
   preloadCategoryImages(cat);
   state.activeCategoryId = cat.id;
-  state.activeSlideIndex = 0; // เปิดไปที่ ภาพที่ 1 เสมอ
+  state.activeSlideIndex = 0;
+  resetZoom(false);
   if (pushHash) {
     history.pushState({ categoryId: cat.id }, '', `#${cat.id}`);
   }
@@ -426,6 +565,7 @@ function goToStep(newIndex) {
 
   const direction = newIndex > state.activeSlideIndex ? 'next' : 'prev';
   state.activeSlideIndex = newIndex;
+  resetZoom(false);
   updateStepViewerInPlace(cat, direction);
 }
 
@@ -442,7 +582,6 @@ function renderApp(direction = 'next') {
   if (!homeView || !stepViewer) return;
 
   if (state.activeCategoryId === null) {
-    // ปลดล็อกความสูงหน้าจอเพื่อให้หน้าแรกเลื่อนดูหัวข้อได้ตามปกติ
     document.body.classList.remove('h-dvh', 'overflow-hidden');
     headerBackBtn?.classList.add('hidden');
     if (headerMainTitle) headerMainTitle.textContent = 'คู่มือพนักงานขาย (ร้านมรุกข)';
@@ -452,7 +591,6 @@ function renderApp(direction = 'next') {
     homeView.classList.remove('hidden');
     renderHomeView(homeView);
   } else {
-    // ล็อกความสูงหน้าจอเป็น 100dvh พอดีเป๊ะ เพื่อให้เห็นปุ่ม ก่อนหน้า/ถัดไป และ 1..11 ทันทีโดยไม่ต้องเลื่อนจอ!
     document.body.classList.add('h-dvh', 'overflow-hidden');
     headerBackBtn?.classList.remove('hidden');
 
@@ -460,7 +598,7 @@ function renderApp(direction = 'next') {
     if (cat) {
       preloadCategoryImages(cat);
       if (headerMainTitle) headerMainTitle.textContent = `${cat.number}. ${cat.title}`;
-      if (headerSubTitle) headerSubTitle.textContent = 'กดปุ่ม ถัดไป หรือกดตัวเลขด้านล่างเพื่อเปลี่ยนภาพ';
+      if (headerSubTitle) headerSubTitle.textContent = 'หมุนลูกกลิ้งเมาส์เพื่อซูมภาพ • กดปุ่มซ้าย/ขวาเพื่อเปลี่ยนขั้นตอน';
     }
 
     homeView.classList.add('hidden');
@@ -509,7 +647,7 @@ function renderHomeView(container) {
             <div class="w-full sm:w-auto shrink-0">
               <span class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-indigo-600 group-hover:bg-indigo-700 text-white text-lg sm:text-xl font-extrabold shadow-md inline-flex items-center justify-center gap-2.5 transition-colors">
                 <span>เปิดดูคู่มือ (${total} ภาพ)</span>
-                ${ICONS.arrowRight}
+                <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </span>
             </div>
           </button>
@@ -527,7 +665,7 @@ function renderHomeView(container) {
 }
 
 /**
- * 2. อัปเดตหน้าดูขั้นตอนแบบ In-Place (ไม่รีเซ็ตหน้าจอ สมูทลื่นไหล และเห็นปุ่มครบ 100% ใน 1 จอ)
+ * 2. อัปเดตหน้าดูขั้นตอนแบบ In-Place พร้อมปุ่มซ้าย-ขวาของภาพ
  */
 function updateStepViewerInPlace(cat, direction = 'next') {
   if (!cat) {
@@ -584,7 +722,7 @@ function updateStepViewerInPlace(cat, direction = 'next') {
   // 2) Update Image with Smooth Slide/Fade Animation
   if (mainImage) {
     mainImage.classList.remove('animate-step-next', 'animate-step-prev');
-    void mainImage.offsetWidth; // Reflow to restart animation cleanly
+    void mainImage.offsetWidth;
     mainImage.src = step.image;
     mainImage.alt = step.title;
     mainImage.classList.add(direction === 'prev' ? 'animate-step-prev' : 'animate-step-next');
@@ -596,45 +734,48 @@ function updateStepViewerInPlace(cat, direction = 'next') {
     instructionBox.classList.add(direction === 'prev' ? 'animate-step-prev' : 'animate-step-next');
   }
 
-  // 3) Update Giant Previous Button
+  // 3) LEFT SIDE BUTTON: ก่อนหน้า
   if (prevBtn) {
     prevBtn.disabled = isFirst;
-    prevBtn.className = `h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold border-2 transition-all active:scale-95 flex items-center justify-center gap-2 ${
+    prevBtn.className = `w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none ${
       isFirst
-        ? 'bg-slate-100 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-800 cursor-not-allowed'
-        : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-sm'
+        ? 'bg-slate-200/70 dark:bg-slate-900/40 text-slate-400 dark:text-slate-700 border-slate-300 dark:border-slate-800 cursor-not-allowed'
+        : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-md cursor-pointer'
     }`;
     prevBtn.innerHTML = `
-      ${ICONS.arrowLeft}
-      <span>ก่อนหน้า ${!isFirst ? `(ภาพที่ ${step.stepNumber - 1})` : ''}</span>
+      ${ICONS.arrowLeftBig}
+      <span class="text-base sm:text-2xl font-extrabold leading-tight">ก่อนหน้า</span>
+      <span class="text-xs sm:text-base font-bold opacity-80">${!isFirst ? `(ภาพที่ ${step.stepNumber - 1})` : '(ภาพแรก)'}</span>
     `;
     prevBtn.onclick = () => {
       if (!isFirst) goToStep(state.activeSlideIndex - 1);
     };
   }
 
-  // 4) Update Giant Next / Finish Button
+  // 4) RIGHT SIDE BUTTON: ถัดไป (หรือ เสร็จสิ้น)
   if (nextBtn) {
     if (!isLast) {
       nextBtn.className =
-        'h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 transition-all active:scale-95 flex items-center justify-center gap-2';
+        'w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/25 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none cursor-pointer';
       nextBtn.innerHTML = `
-        <span>ถัดไป (ภาพที่ ${step.stepNumber + 1})</span>
-        ${ICONS.arrowRight}
+        ${ICONS.arrowRightBig}
+        <span class="text-base sm:text-2xl font-extrabold leading-tight">ถัดไป</span>
+        <span class="text-xs sm:text-base font-bold text-indigo-100">(ภาพที่ ${step.stepNumber + 1})</span>
       `;
       nextBtn.onclick = () => goToStep(state.activeSlideIndex + 1);
     } else {
       nextBtn.className =
-        'h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25 transition-all active:scale-95 flex items-center justify-center gap-2';
+        'w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/25 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none cursor-pointer';
       nextBtn.innerHTML = `
-        ${ICONS.check}
-        <span>เสร็จสิ้น (กลับหน้าแรก)</span>
+        ${ICONS.checkBig}
+        <span class="text-base sm:text-2xl font-extrabold leading-tight">เสร็จสิ้น</span>
+        <span class="text-xs sm:text-base font-bold text-emerald-100">(กลับหน้าแรก)</span>
       `;
       nextBtn.onclick = () => openHomeList();
     }
   }
 
-  // 5) Update Direct Step Number Buttons (1 2 3 ... 11)
+  // 5) Bottom Number Pills (1 2 3 ... 11)
   if (pillsContainer) {
     pillsContainer.innerHTML = cat.steps
       .map(
@@ -661,33 +802,6 @@ function updateStepViewerInPlace(cat, direction = 'next') {
       });
     });
   }
-}
-
-// ============================================================================
-// Lightbox (Full-screen Image Zoom)
-// ============================================================================
-function openLightbox() {
-  const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
-  if (!cat) return;
-  const step = cat.steps[state.activeSlideIndex];
-  if (!step) return;
-
-  state.lightboxOpen = true;
-  const backdrop = document.getElementById('lightbox-backdrop');
-  const titleEl = document.getElementById('lightbox-title');
-  const imgEl = document.getElementById('lightbox-image');
-
-  if (titleEl) titleEl.textContent = `ขั้นตอนที่ ${step.stepNumber} : ${step.title}`;
-  if (imgEl) {
-    imgEl.src = step.image;
-    imgEl.alt = step.title;
-  }
-  backdrop?.classList.remove('hidden');
-}
-
-function closeLightbox() {
-  state.lightboxOpen = false;
-  document.getElementById('lightbox-backdrop')?.classList.add('hidden');
 }
 
 // ============================================================================
@@ -718,58 +832,30 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       state.activeCategoryId = null;
     }
+    resetZoom(false);
     renderApp();
   });
 
   updateThemeUI();
+  setupMouseZoomAndPan();
   renderApp();
 
   document.getElementById('btn-brand-home')?.addEventListener('click', () => openHomeList());
   document.getElementById('btn-header-back-home')?.addEventListener('click', () => openHomeList());
   document.getElementById('btn-theme-toggle')?.addEventListener('click', toggleTheme);
-  document.getElementById('step-image-wrapper')?.addEventListener('click', openLightbox);
-
-  document.getElementById('lightbox-backdrop')?.addEventListener('click', closeLightbox);
-  document.getElementById('lightbox-container')?.addEventListener('click', (e) => e.stopPropagation());
-  document.getElementById('btn-close-lightbox')?.addEventListener('click', closeLightbox);
-
-  // Touch Swipe Left / Right on Image for Mobile Smoothness
-  let touchStartX = 0;
-  const imgWrapper = document.getElementById('step-image-wrapper');
-  imgWrapper?.addEventListener(
-    'touchstart',
-    (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    },
-    { passive: true }
-  );
-  imgWrapper?.addEventListener(
-    'touchend',
-    (e) => {
-      const diffX = e.changedTouches[0].screenX - touchStartX;
-      const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
-      if (!cat) return;
-      if (diffX < -50 && state.activeSlideIndex < cat.steps.length - 1) {
-        goToStep(state.activeSlideIndex + 1);
-      } else if (diffX > 50 && state.activeSlideIndex > 0) {
-        goToStep(state.activeSlideIndex - 1);
-      }
-    },
-    { passive: true }
-  );
 
   // Keyboard support
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      if (state.lightboxOpen) {
-        closeLightbox();
+      if (zoomState.scale > 1) {
+        resetZoom(true);
       } else if (state.activeCategoryId !== null) {
         openHomeList();
       }
       return;
     }
 
-    if (state.activeCategoryId !== null && !state.lightboxOpen) {
+    if (state.activeCategoryId !== null) {
       const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
       if (!cat) return;
       if (e.key === 'ArrowLeft' && state.activeSlideIndex > 0) {
