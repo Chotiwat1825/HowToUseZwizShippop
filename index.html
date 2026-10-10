@@ -2,17 +2,17 @@
 <html lang="th" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <meta name="theme-color" id="meta-theme-color" content="#f8fafc" />
-  <meta name="description" content="คู่มือแนวทางการใช้งานระบบ Zwiz และ Shippop สำหรับพนักงานขาย ร้านมรุกข (Marukka)" />
+  <meta name="description" content="คู่มือแนวทางการใช้งานระบบ Zwiz และ Shippop สำหรับพนักงานขาย ร้านมรุกข" />
   <title>คู่มือพนักงานขาย Zwiz &amp; Shippop | ร้านมรุกข</title>
 
-  <!-- Google Fonts: Prompt & Sarabun for clean Thai typography -->
+  <!-- Google Fonts: Prompt & Sarabun -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&amp;family=Sarabun:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700;800&amp;family=Sarabun:wght@500;600;700;800&amp;display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN with dark mode class configuration -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -28,7 +28,7 @@
     };
   </script>
 
-  <!-- Initial Theme Setup to prevent FOUC (Light Mode Baseline) -->
+  <!-- Initial Theme Setup (Light Mode Baseline) -->
   <script>
     (function () {
       try {
@@ -50,24 +50,10 @@
       font-family: 'Prompt', 'Sarabun', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.4);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(100, 116, 139, 0.6);
-    }
     @keyframes modalZoomIn {
       from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: scale(0.96);
       }
       to {
         opacity: 1;
@@ -75,477 +61,144 @@
       }
     }
     .animate-modal-in {
-      animation: modalZoomIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: modalZoomIn 0.18s ease-out forwards;
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white transition-colors duration-200">
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
-  <!-- Pull-to-Refresh Indicator -->
-  <div id="ptr-indicator" class="fixed top-0 left-0 right-0 z-40 flex items-center justify-center pointer-events-none transition-all duration-200 opacity-0 -translate-y-12">
-    <div class="mt-3 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-      <svg id="ptr-icon" class="w-4 h-4 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 5v14M19 12l-7 7-7-7"/>
-      </svg>
-      <span id="ptr-text">ดึงลงเพื่อรีเฟรชข้อมูล</span>
-    </div>
-  </div>
-
-  <!-- Sticky Glassmorphism Top Header -->
-  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-sm dark:bg-slate-900/60 dark:backdrop-blur-md dark:border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3.5 gap-3">
-        
-        <!-- Brand & Title (Clicking returns to Home List) -->
-        <div class="flex items-center justify-between">
-          <button
-            id="btn-brand-home"
-            type="button"
-            class="flex items-center gap-3 text-left group focus:outline-none active:scale-95 transition-transform"
-            title="กลับหน้าแรก (เลือกหัวข้อคู่มือ)"
-          >
-            <div class="w-10 h-10 rounded-xl bg-indigo-600 group-hover:bg-indigo-700 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 transition-colors">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-              </svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  คู่มือพนักงานขาย Zwiz &amp; Shippop
-                </h1>
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 inline-flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  ร้านมรุกข
-                </span>
-                <!-- Offline Status Badge (Hidden when online) -->
-                <span id="offline-badge" class="hidden px-2.5 py-1 rounded-md text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 inline-flex items-center gap-1.5">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                    <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
-                    <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
-                    <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
-                    <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
-                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-                    <line x1="12" y1="20" x2="12.01" y2="20"/>
-                  </svg>
-                  ออฟไลน์
-                </span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-400">
-                แนวทางปฏิบัติงานมาตรฐาน (SOP) ครบ 5 หมวดหมู่ พร้อมภาพชี้จุดทุกขั้นตอน
-              </p>
-            </div>
-          </button>
-
-          <!-- Mobile Action Buttons -->
-          <div class="flex items-center gap-2 md:hidden">
-            <button id="btn-quick-cmd-mobile" type="button" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 active:scale-95 transition" title="คำสั่งลัดที่ใช้บ่อย">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="4 17 10 11 4 5"/>
-                <line x1="12" y1="19" x2="20" y2="19"/>
-              </svg>
-            </button>
-            <button id="btn-theme-mobile" type="button" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 active:scale-95 transition" aria-label="สลับธีมมืด/สว่าง">
-              <span class="theme-icon-container"></span>
-            </button>
-          </div>
+  <!-- Sticky Top Bar: Simple, Big, Uncluttered -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-slate-200 shadow-sm dark:bg-slate-900/95 dark:border-slate-800">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+      
+      <!-- Left: Home / Brand Button -->
+      <button
+        id="btn-brand-home"
+        type="button"
+        class="flex items-center gap-3 text-left group focus:outline-none active:scale-95 transition-transform"
+      >
+        <div class="w-12 h-12 rounded-2xl bg-indigo-600 group-hover:bg-indigo-700 text-white flex items-center justify-center shadow-md shrink-0">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
         </div>
-
-        <!-- Search Bar & Controls -->
-        <div class="flex items-center gap-2.5">
-          <!-- Search Input -->
-          <div class="relative flex-1 sm:w-72">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input
-              id="search-input"
-              type="text"
-              placeholder="ค้นหาขั้นตอน เช่น ใบปะหน้า, ยกเลิก, #รับยอด..."
-              class="w-full pl-10 pr-14 py-2 text-sm bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
-            <button id="btn-clear-search" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 active:scale-95">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-            <kbd id="search-kbd" class="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded pointer-events-none">/</kbd>
-          </div>
-
-          <!-- View Mode Switcher (Shown only when inside a topic or searching) -->
-          <div id="view-mode-wrapper" class="hidden inline-flex rounded-xl p-1 bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 shrink-0">
-            <button
-              id="btn-view-grid"
-              type="button"
-              class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm"
-              title="ดูแบบเรียงทุกขั้นตอน"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7"/>
-                <rect x="14" y="3" width="7" height="7"/>
-                <rect x="14" y="14" width="7" height="7"/>
-                <rect x="3" y="14" width="7" height="7"/>
-              </svg>
-              <span class="hidden sm:inline">ดูทั้งหมด</span>
-            </button>
-            <button
-              id="btn-view-slide"
-              type="button"
-              class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-              title="ดูทีละขั้นตอนแบบสไลด์"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                <line x1="8" y1="21" x2="16" y2="21"/>
-                <line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-              <span class="hidden sm:inline">ทีละขั้นตอน</span>
-            </button>
-          </div>
-
-          <!-- Quick Cheat Sheet Button (Desktop) -->
-          <button
-            id="btn-quick-cmd-desktop"
-            type="button"
-            class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 active:scale-95 transition shrink-0"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 17 10 11 4 5"/>
-              <line x1="12" y1="19" x2="20" y2="19"/>
-            </svg>
-            คำสั่งลัด &amp; ข้อควรระวัง
-          </button>
-
-          <!-- Theme Switcher Button (Desktop) -->
-          <button
-            id="btn-theme-desktop"
-            type="button"
-            class="hidden md:inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 active:scale-95 transition shrink-0"
-            aria-label="สลับธีมมืด/สว่าง"
-            title="สลับโหมดสีสว่าง / มืด"
-          >
-            <span class="theme-icon-container"></span>
-          </button>
+        <div>
+          <h1 class="text-lg sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            คู่มือพนักงานขาย (ร้านมรุกข)
+          </h1>
+          <p class="text-sm sm:text-base font-semibold text-slate-600 dark:text-slate-300">
+            ระบบส่งพัสดุ Zwiz &amp; Shippop
+          </p>
         </div>
+      </button>
 
+      <!-- Right: Back to Home Button (When viewing a topic) & Theme Toggle -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button
+          id="btn-header-back-home"
+          type="button"
+          class="hidden px-4 sm:px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 text-base sm:text-lg font-extrabold shadow-md active:scale-95 transition inline-flex items-center gap-2"
+        >
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          <span>กลับหน้าแรก</span>
+        </button>
+
+        <button
+          id="btn-theme-toggle"
+          type="button"
+          class="px-3.5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border-2 border-slate-300 dark:border-slate-700 font-bold text-sm sm:text-base active:scale-95 transition inline-flex items-center gap-2"
+          aria-label="สลับสีพื้นหลัง"
+        >
+          <span id="theme-icon-box"></span>
+          <span id="theme-label-text" class="hidden sm:inline">โหมดสี</span>
+        </button>
       </div>
 
-      <!-- Category Navigation Bar (Shown when viewing a specific topic) -->
-      <nav id="category-tabs" class="hidden flex items-center gap-2 overflow-x-auto py-2.5 no-scrollbar border-t border-slate-100 dark:border-slate-800/70" aria-label="หมวดหมู่คู่มือ">
-        <!-- Rendered dynamically by app.js -->
-      </nav>
     </div>
   </header>
 
-  <!-- Main Content Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Main Content -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     <!-- =============================================================== -->
-    <!-- HOME VIEW: TOPIC SELECTION LIST (Default Landing View)          -->
+    <!-- 1. HOME VIEW: BIG SIMPLE TOPIC LIST                             -->
     <!-- =============================================================== -->
-    <section id="home-view-container" class="max-w-4xl mx-auto space-y-5">
-      <!-- Populated dynamically by app.js -->
+    <section id="home-view" class="space-y-5">
+      <!-- Populated by app.js -->
     </section>
 
     <!-- =============================================================== -->
-    <!-- TOPIC DETAIL VIEW: HEADER & STEPS                               -->
+    <!-- 2. STEP VIEWER: OPENS DIRECTLY AT IMAGE 1 OF X                  -->
     <!-- =============================================================== -->
-    <section id="category-header" class="hidden mb-6 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm">
-      <!-- Populated dynamically by app.js -->
-    </section>
-
-    <!-- Skeleton Loading Container (Shown during switching/refresh) -->
-    <section id="skeleton-container" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
-        <div class="aspect-video w-full rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-        <div class="h-5 w-2/3 rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-        <div class="h-4 w-full rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-      </div>
-      <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
-        <div class="aspect-video w-full rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-        <div class="h-5 w-3/4 rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-        <div class="h-4 w-5/6 rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-      </div>
-      <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
-        <div class="aspect-video w-full rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-        <div class="h-5 w-1/2 rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-        <div class="h-4 w-4/5 rounded-lg bg-slate-200 dark:bg-slate-800/50 animate-pulse"></div>
-      </div>
-    </section>
-
-    <!-- Steps Content Area (Grid Mode or Slide Walkthrough Mode) -->
-    <section id="steps-container" class="hidden">
-      <!-- Populated dynamically by app.js -->
-    </section>
-
-    <!-- Empty State (Shown when search has 0 matches) -->
-    <section id="empty-state" class="hidden my-8 p-10 bg-white dark:bg-slate-900/40 border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl text-center max-w-lg mx-auto">
-      <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
-        <svg class="w-10 h-10 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          <line x1="8" y1="11" x2="14" y2="11"/>
-        </svg>
-      </div>
-      <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">
-        ไม่พบขั้นตอนที่ตรงกับคำค้นหา
-      </h3>
-      <p id="empty-state-query" class="text-sm text-slate-600 dark:text-slate-400 mb-5">
-        ลองค้นหาด้วยคำสำคัญอื่น เช่น "ที่อยู่", "ขนส่ง", "ใบปะหน้า", "ยกเลิก", "#รับยอด"
-      </p>
-      <button
-        id="btn-reset-empty"
-        type="button"
-        class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 active:scale-95 transition inline-flex items-center gap-2"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
-        </svg>
-        ล้างคำค้นหาแล้วกลับหน้าแรก
-      </button>
+    <section id="step-viewer" class="hidden space-y-5">
+      <!-- Populated by app.js -->
     </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="mt-12 border-t border-slate-200 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>คู่มือมาตรฐานการปฏิบัติงาน (SOP) สำหรับพนักงานขาย — ระบบ Zwiz.ai &amp; Shippop</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <span>คีย์ลัด: กด <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px]">/</kbd> ค้นหา</span>
-        <span>กด <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px]">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px]">→</kbd> เลื่อนภาพ</span>
-        <span>กด <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px]">Esc</kbd> ปิดหน้าต่าง</span>
-      </div>
-    </div>
-  </footer>
-
   <!-- ================================================================= -->
-  <!-- LIGHTBOX MODAL (Exact structure per premium-ux-ui-guidelines)      -->
+  <!-- FULL-SCREEN IMAGE ZOOM MODAL (When tapping the image to enlarge)  -->
   <!-- ================================================================= -->
   <div
     id="lightbox-backdrop"
-    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-6"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-2 sm:p-6"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="lightbox-title"
   >
     <div
       id="lightbox-container"
-      class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-modal-in flex flex-col max-h-[92vh]"
+      class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-6xl shadow-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 animate-modal-in flex flex-col max-h-[95vh]"
     >
-      <!-- Header (Top Bar) -->
-      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-4 shrink-0">
-        <div class="flex items-center gap-3 min-w-0">
-          <span id="lightbox-step-badge" class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
-            ขั้นตอนที่ 1
-          </span>
-          <h3 id="lightbox-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
-            รายละเอียดขั้นตอน
-          </h3>
-        </div>
-        <!-- Close Button -->
+      <!-- Top Bar -->
+      <div class="px-5 sm:px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900">
+        <h3 id="lightbox-title" class="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white truncate">
+          ภาพขยาย
+        </h3>
         <button
           id="btn-close-lightbox"
           type="button"
-          class="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors active:scale-95 shrink-0"
-          aria-label="ปิดหน้าต่าง"
+          class="px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-base sm:text-lg font-extrabold active:scale-95 transition inline-flex items-center gap-2 shrink-0"
         >
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/>
             <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
+          <span>ปิดภาพขยาย</span>
         </button>
       </div>
 
-      <!-- Body Content -->
-      <div class="p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto">
-        <div class="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-          <img
-            id="lightbox-image"
-            src=""
-            alt=""
-            class="w-full max-h-[62vh] object-contain select-none transition-transform duration-300 cursor-zoom-in"
-          />
-        </div>
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-200/70 dark:border-slate-800">
-          <div class="space-y-1">
-            <p id="lightbox-desc" class="text-sm text-slate-700 dark:text-slate-200 font-medium"></p>
-            <p id="lightbox-tip" class="text-xs text-amber-600 dark:text-amber-400 font-medium hidden"></p>
-          </div>
-          <button
-            id="btn-lightbox-check"
-            type="button"
-            class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition active:scale-95 inline-flex items-center gap-2 shrink-0 self-start sm:self-center"
-          >
-          </button>
-        </div>
-      </div>
-
-      <!-- Action Bar (Footer) -->
-      <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800/80 flex gap-3 justify-between items-center shrink-0">
-        <span id="lightbox-counter" class="text-xs font-semibold text-slate-500 dark:text-slate-400">
-          ภาพที่ 1 / 11
-        </span>
-        <div class="flex items-center gap-2.5">
-          <button
-            id="btn-lightbox-prev"
-            type="button"
-            class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none active:scale-95 transition inline-flex items-center gap-1.5"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"/>
-            </svg>
-            ก่อนหน้า
-          </button>
-          <button
-            id="btn-lightbox-next"
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20 disabled:opacity-40 disabled:pointer-events-none active:scale-95 transition inline-flex items-center gap-1.5"
-          >
-            ถัดไป
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
-          </button>
-        </div>
+      <!-- Large Image Body -->
+      <div class="p-3 sm:p-6 bg-slate-950 flex-1 overflow-auto flex items-center justify-center">
+        <img
+          id="lightbox-image"
+          src=""
+          alt=""
+          class="w-full max-h-[78vh] object-contain select-none"
+        />
       </div>
     </div>
   </div>
 
   <!-- ================================================================= -->
-  <!-- QUICK CHEAT SHEET & COMMAND MODAL (Exact Modal Layout Structure)   -->
-  <!-- ================================================================= -->
-  <div
-    id="cheatsheet-backdrop"
-    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="cheatsheet-title"
-  >
-    <div
-      id="cheatsheet-container"
-      class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-modal-in"
-    >
-      <!-- Header -->
-      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 17 10 11 4 5"/>
-              <line x1="12" y1="19" x2="20" y2="19"/>
-            </svg>
-          </div>
-          <h3 id="cheatsheet-title" class="text-base font-bold text-slate-900 dark:text-slate-100">
-            คำสั่งลัด &amp; กฎเหล็กพนักงานขาย
-          </h3>
-        </div>
-        <button
-          id="btn-close-cheatsheet"
-          type="button"
-          class="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-400 transition-colors active:scale-95"
-          aria-label="ปิดหน้าต่าง"
-        >
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Body Content -->
-      <div class="p-6 flex flex-col gap-4 text-sm">
-        <div class="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/70 dark:border-indigo-800/60 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-indigo-700 dark:text-indigo-300">คำสั่งสร้างออเดอร์ใหม่ในแชทลูกค้า</span>
-            <button
-              id="btn-copy-command-modal"
-              type="button"
-              class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold active:scale-95 transition inline-flex items-center gap-1"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              คัดลอก #รับยอด
-            </button>
-          </div>
-          <code class="block px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-slate-800 font-mono text-xs text-slate-800 dark:text-slate-200">
-            #รับยอด 100
-          </code>
-          <p class="text-xs text-slate-600 dark:text-slate-400">
-            พิมพ์ <span class="font-semibold text-slate-800 dark:text-slate-200">#รับยอด ตามด้วยจำนวนเงิน</span> ในแชทลูกค้า จากนั้นกดรีเฟรชหน้าเว็บ 1 ครั้งเพื่อให้คำสั่งซื้อใหม่แสดงขึ้นมา
-          </p>
-        </div>
-
-        <div class="space-y-2.5">
-          <div class="flex items-start gap-2.5">
-            <span class="px-2 py-0.5 rounded-md text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5">สำคัญ</span>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong class="text-slate-900 dark:text-white">การยกเลิกสินค้า:</strong> ต้องยกเลิกทั้งในระบบ <strong>Zwiz</strong> และส่งเลขพัสดุ (<code class="font-mono">SP...</code>) แจ้งยกเลิกกับแอดมิน <strong>Shippop</strong> ใน LINE ทุกครั้ง
-            </p>
-          </div>
-          <div class="flex items-start gap-2.5">
-            <span class="px-2 py-0.5 rounded-md text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">ที่อยู่ต้นทาง</span>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong class="text-slate-900 dark:text-white">สร้างรายการในเว็บ Shippop:</strong> อย่าลืมกดปุ่ม <strong>"เลือกที่อยู่"</strong> แล้วเปลี่ยนที่อยู่ผู้ส่งเป็น <strong>"มรุกข"</strong> ก่อนกรอกที่อยู่ลูกค้าปลายทาง
-            </p>
-          </div>
-          <div class="flex items-start gap-2.5">
-            <span class="px-2 py-0.5 rounded-md text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">ตรวจสอบ</span>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong class="text-slate-900 dark:text-white">ก่อนกดส่งพัสดุ:</strong> เช็ค 3 จุดเสมอ ได้แก่ <strong>1. ชื่อและที่อยู่ลูกค้า</strong>, <strong>2. ขนส่งที่เลือก</strong>, และ <strong>3. ยอดเงิน/สถานะจ่ายแล้ว</strong>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Bar (Footer) -->
-      <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800/80 flex gap-3 justify-end">
-        <button
-          id="btn-GotIt-cheatsheet"
-          type="button"
-          class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20 active:scale-95 transition"
-        >
-          เข้าใจแล้ว ปิดหน้าต่าง
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================================================================= -->
-  <!-- FLOATING TOAST WITH UNDO (Optimistic UI & Toast Undo)              -->
+  <!-- BIG READABLE TOAST NOTIFICATION                                   -->
   <!-- ================================================================= -->
   <div
     id="toast-container"
-    class="hidden fixed bottom-6 right-6 z-[110] shadow-xl rounded-xl bg-slate-900 dark:bg-slate-800 text-white border border-slate-700/80 px-4 py-3 flex items-center gap-3 max-w-sm transition-all duration-200"
+    class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[110] shadow-2xl rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-2 border-slate-700 dark:border-slate-300 px-6 py-4 flex items-center gap-3 w-[90%] max-w-md transition-all duration-200"
     role="status"
     aria-live="polite"
   >
-    <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <svg class="w-7 h-7 text-emerald-400 dark:text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
       <polyline points="22 4 12 14.01 9 11.01"/>
     </svg>
-    <span id="toast-message" class="text-xs font-medium leading-snug">บันทึกสถานะเรียบร้อย</span>
-    <button
-      id="btn-toast-undo"
-      type="button"
-      class="hidden ml-auto px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-xs font-bold active:scale-95 transition shrink-0"
-    >
-      เลิกทำ
-    </button>
+    <span id="toast-message" class="text-base sm:text-lg font-extrabold leading-snug">ดำเนินการเรียบร้อย</span>
   </div>
 
-  <!-- Application Script -->
   <script src="app.js"></script>
 </body>
 </html>
