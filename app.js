@@ -6,13 +6,14 @@
 const MANUAL_CATEGORIES = [
   {
     id: 'zwiz-ship',
-    title: '1. ส่งพัสดุผ่าน Zwiz',
+    number: '01',
+    title: 'การส่งพัสดุผ่านระบบ Zwiz',
     shortTitle: 'ส่งพัสดุ Zwiz',
     badgeText: '11 ขั้นตอนหลัก',
     badgeColor: 'indigo',
-    summary: 'ขั้นตอนตั้งแต่เปิดแชทลูกค้า คัดลอกที่อยู่จัดส่ง ตรวจสอบความถูกต้อง เลือกขนส่งผ่านระบบ Shippop จนถึงการปริ้นใบปะหน้าพัสดุ',
+    summary: 'ตั้งแต่เข้าหน้ารวมแชท เลือกแชทลูกค้า คัดลอกและวางที่อยู่จัดส่ง ตรวจสอบความถูกต้อง เลือกขนส่งผ่านระบบ Shippop จนถึงการปริ้นใบปะหน้าพัสดุ',
     keyRule: 'ตรวจสอบชื่อ ที่อยู่ และขนส่งให้ครบ 3 จุดก่อนกดยืนยันส่งพัสดุทุกครั้ง',
-    iconSvg: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
     steps: [
       {
         id: 'zwiz-ship-1',
@@ -128,13 +129,14 @@ const MANUAL_CATEGORIES = [
   },
   {
     id: 'check-status',
-    title: '2. วิธีดูสถานะการจัดส่ง',
+    number: '02',
+    title: 'วิธีดูสถานะการจัดส่งสินค้า',
     shortTitle: 'ดูสถานะจัดส่ง',
     badgeText: '3 ขั้นตอน',
     badgeColor: 'emerald',
     summary: 'วิธีตรวจสอบว่าสินค้าอยู่ในขั้นตอนไหน มีออเดอร์ไหนที่จ่ายเงินแล้วแต่ยังไม่ได้จัดส่ง หรือจัดส่งเรียบร้อยแล้ว',
     keyRule: 'สามารถกรองดูแยกตามสถานะ (จ่ายแล้ว / ส่งแล้ว / ยกเลิก) และเลือกดูย้อนหลังตามจำนวนวันได้',
-    iconSvg: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
     steps: [
       {
         id: 'check-status-1',
@@ -170,13 +172,14 @@ const MANUAL_CATEGORIES = [
   },
   {
     id: 'reprint-cover',
-    title: '3. วิธีดูใบปะหน้าย้อนหลัง',
+    number: '03',
+    title: 'วิธีดูและดาวน์โหลดใบปะหน้าย้อนหลัง',
     shortTitle: 'ใบปะหน้าย้อนหลัง',
     badgeText: '3 ขั้นตอน',
     badgeColor: 'amber',
-    summary: 'กรณีปิดหน้าต่างปริ้นไปแล้ว หรือต้องการดาวน์โหลดไฟล์ใบปะหน้าพัสดุย้อนหลังจากระบบ Zwiz',
+    summary: 'กรณีปิดหน้าต่างปริ้นไปแล้ว หรือต้องการดาวน์โหลดไฟล์ใบปะหน้าพัสดุย้อนหลังจากระบบ Zwiz เพื่อปริ้นซ้ำ',
     keyRule: 'กดลูกศรเล็กๆ ข้างปุ่ม "ส่งกับ SHIPPOP" เพื่อเข้าสู่ประวัติ Shippop Orders',
-    iconSvg: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>`,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>`,
     steps: [
       {
         id: 'reprint-cover-1',
@@ -212,14 +215,15 @@ const MANUAL_CATEGORIES = [
   },
   {
     id: 'cancel-order',
-    title: '4. วิธียกเลิกสินค้า & เปิดบิลใหม่',
+    number: '04',
+    title: 'วิธียกเลิกสินค้า & สร้างคำสั่งซื้อใหม่ (#รับยอด)',
     shortTitle: 'ยกเลิกสินค้า',
     badgeText: '8 ขั้นตอนสำคัญ',
     badgeColor: 'rose',
     summary: 'ขั้นตอนการยกเลิกรายการที่กดส่งไปแล้ว (กรณีที่อยู่ผิด เปลี่ยนขนส่ง หรือลูกค้ายกเลิก) และวิธีสร้างคำสั่งซื้อใหม่ในแชทด้วยคำสั่ง #รับยอด',
     keyRule: 'กฎเหล็ก: ต้องดำเนินการยกเลิกทั้ง 2 ที่เสมอ คือ 1) แจ้งเลขพัสดุให้แอดมิน Shippop ยกเลิก และ 2) เปลี่ยนสถานะเป็นยกเลิกใน Zwiz',
     hasQuickCommand: true,
-    iconSvg: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
     steps: [
       {
         id: 'cancel-order-1',
@@ -305,13 +309,14 @@ const MANUAL_CATEGORIES = [
   },
   {
     id: 'shippop-web',
-    title: '5. วิธีใช้งานเว็บ Shippop โดยตรง',
+    number: '05',
+    title: 'วิธีใช้งานเว็บ Shippop โดยตรง',
     shortTitle: 'เว็บ Shippop',
     badgeText: '9 ขั้นตอน',
     badgeColor: 'indigo',
     summary: 'คู่มือการเข้าสร้างรายการส่งพัสดุผ่านหน้าเว็บไซต์ Shippop Business โดยตรง และการพิมพ์ใบปะหน้าพัสดุซ้ำย้อนหลัง',
     keyRule: 'เมื่อสร้างรายการในเว็บ Shippop อย่าลืมกด "เลือกที่อยู่" แล้วเปลี่ยนผู้ส่งต้นทางเป็น "มรุกข" ทุกครั้ง',
-    iconSvg: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
     steps: [
       {
         id: 'shippop-web-1',
@@ -464,10 +469,10 @@ const idbStorage = {
 };
 
 // ============================================================================
-// Application State
+// Application State (Default to Home Topic Selection List: activeCategoryId = null)
 // ============================================================================
 const state = {
-  activeCategoryId: 'zwiz-ship',
+  activeCategoryId: null, // null = Home Topic List View, string = Specific Topic View
   viewMode: 'grid', // 'grid' | 'slide'
   activeSlideIndex: 0,
   searchQuery: '',
@@ -493,7 +498,10 @@ const ICONS = {
   info: `<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
   alertTriangle: `<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
   copy: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
-  reset: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`
+  reset: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+  arrowLeft: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  arrowRight: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+  list: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`
 };
 
 function getBadgeClasses(type) {
@@ -506,6 +514,19 @@ function getBadgeClasses(type) {
       return 'bg-rose-500/10 text-rose-600 dark:text-rose-400';
     default:
       return 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
+  }
+}
+
+function getIconBoxClasses(type) {
+  switch (type) {
+    case 'emerald':
+      return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+    case 'amber':
+      return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    case 'rose':
+      return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+    default:
+      return 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20';
   }
 }
 
@@ -584,7 +605,6 @@ function toggleStepCompleted(stepId, stepTitle = '') {
     delete state.completedSteps[stepId];
   }
 
-  // Optimistic UI update immediately
   idbStorage.set('completed_steps', state.completedSteps);
   renderAll();
   if (state.lightboxOpen) {
@@ -651,37 +671,77 @@ async function copyQuickCommand(text = '#รับยอด 100') {
 }
 
 // ============================================================================
+// Navigation Between Home Topic List & Topic Detail View
+// ============================================================================
+function goHomeList(pushHash = true) {
+  state.activeCategoryId = null;
+  state.activeSlideIndex = 0;
+  if (state.searchQuery.trim()) {
+    state.searchQuery = '';
+    const input = document.getElementById('search-input');
+    if (input) input.value = '';
+    updateSearchClearButton();
+  }
+  if (pushHash && window.location.hash) {
+    history.pushState(null, '', window.location.pathname + window.location.search);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderAll();
+}
+
+function selectCategory(categoryId, pushHash = true) {
+  const exists = MANUAL_CATEGORIES.some((c) => c.id === categoryId);
+  if (!exists) return;
+
+  state.activeCategoryId = categoryId;
+  state.activeSlideIndex = 0;
+  if (state.searchQuery.trim()) {
+    state.searchQuery = '';
+    const input = document.getElementById('search-input');
+    if (input) input.value = '';
+    updateSearchClearButton();
+  }
+  if (pushHash) {
+    history.pushState({ categoryId }, '', `#${categoryId}`);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  triggerSkeletonTransition(() => renderAll());
+}
+
+// ============================================================================
 // Skeleton Transition Helper (Section 4B Guidelines)
 // ============================================================================
 function triggerSkeletonTransition(callback) {
   const skeleton = document.getElementById('skeleton-container');
   const stepsContainer = document.getElementById('steps-container');
+  const homeContainer = document.getElementById('home-view-container');
   if (!skeleton || !stepsContainer) {
     callback();
     return;
   }
 
+  if (homeContainer) homeContainer.classList.add('hidden');
   stepsContainer.classList.add('hidden');
   skeleton.classList.remove('hidden');
 
   setTimeout(() => {
-    callback();
     skeleton.classList.add('hidden');
-    stepsContainer.classList.remove('hidden');
-  }, 160);
+    callback();
+  }, 150);
 }
 
 // ============================================================================
 // Rendering Functions
 // ============================================================================
 function getActiveCategory() {
-  return MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId) || MANUAL_CATEGORIES[0];
+  return MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId) || null;
 }
 
 function getFilteredSteps() {
   const q = state.searchQuery.trim().toLowerCase();
   if (!q) {
     const cat = getActiveCategory();
+    if (!cat) return [];
     return cat.steps.map((s) => ({ ...s, categoryTitle: cat.shortTitle, categoryId: cat.id }));
   }
 
@@ -698,11 +758,165 @@ function getFilteredSteps() {
   return results;
 }
 
+/**
+ * Renders the Default Home View: A clean, interactive List of the 5 Manual Topics
+ */
+function renderHomeTopicList() {
+  const homeContainer = document.getElementById('home-view-container');
+  if (!homeContainer) return;
+
+  const totalStepsCount = MANUAL_CATEGORIES.reduce((acc, c) => acc + c.steps.length, 0);
+  const totalDoneCount = Object.keys(state.completedSteps).length;
+
+  homeContainer.innerHTML = `
+    <!-- Intro Banner -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+          ${ICONS.list}
+          <span>สารบัญคู่มือพนักงานขาย (เลือกหัวข้อที่ต้องการดู)</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
+          เลือกหัวข้อคู่มือการใช้งานที่ต้องการดู
+        </h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400">
+          คลิกเลือกหัวข้อจากรายการด้านล่างเพื่อดูขั้นตอนและภาพชี้จุดประกอบทีละขั้นตอน
+        </p>
+      </div>
+      <div class="px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 shrink-0 text-right">
+        <div class="text-xs text-slate-500 dark:text-slate-400">ความคืบหน้าเช็คลิสต์รวม</div>
+        <div class="text-base font-bold text-indigo-600 dark:text-indigo-400">${totalDoneCount} / ${totalStepsCount} ขั้นตอน</div>
+      </div>
+    </div>
+
+    <!-- Vertical List of 5 Manual Topics -->
+    <div class="space-y-3.5" role="list">
+      ${MANUAL_CATEGORIES.map((cat, idx) => {
+        const doneCount = cat.steps.filter((s) => state.completedSteps[s.id]).length;
+        const totalCount = cat.steps.length;
+        const coverImg = cat.steps[0]?.image || '';
+
+        return `
+          <div
+            role="listitem"
+            data-select-topic="${cat.id}"
+            class="group bg-white dark:bg-slate-900/60 hover:bg-slate-50/80 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-200 cursor-pointer active:scale-[0.99] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <!-- Left Side: Number + Icon + Title + Summary -->
+            <div class="flex items-start gap-4 min-w-0 flex-1">
+              <div class="w-12 h-12 rounded-xl border ${getIconBoxClasses(cat.badgeColor)} flex flex-col items-center justify-center shrink-0 mt-0.5">
+                <span class="text-[10px] font-bold leading-none opacity-75">หมวด</span>
+                <span class="text-base font-bold leading-tight">${idx + 1}</span>
+              </div>
+
+              <div class="space-y-1.5 min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    ${idx + 1}. ${escapeHtml(cat.title)}
+                  </h3>
+                  <span class="px-2.5 py-0.5 rounded-md text-xs font-bold ${getBadgeClasses(cat.badgeColor)} inline-flex items-center gap-1">
+                    ${cat.iconSvg}
+                    <span>${cat.badgeText}</span>
+                  </span>
+                  ${
+                    doneCount > 0
+                      ? `<span class="px-2 py-0.5 rounded-md text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
+                          ${ICONS.checkCircle}
+                          <span>ทำแล้ว ${doneCount}/${totalCount}</span>
+                        </span>`
+                      : ''
+                  }
+                </div>
+
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  ${escapeHtml(cat.summary)}
+                </p>
+
+                <div class="pt-1 flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                  ${ICONS.alertTriangle}
+                  <span class="truncate">${escapeHtml(cat.keyRule)}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Preview Thumbnail & Open Button -->
+            <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80 shrink-0">
+              <div class="hidden md:block w-28 aspect-video rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950">
+                <img src="${coverImg}" alt="${escapeHtml(cat.title)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+              </div>
+              <span class="px-4 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 group-hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 group-hover:text-white text-xs font-bold transition-colors inline-flex items-center gap-1.5 shadow-sm">
+                <span>เปิดดูคู่มือ</span>
+                ${ICONS.arrowRight}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+
+    <!-- Bottom Quick Helper Card on Home Page -->
+    <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+          ${ICONS.copy}
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">
+            คำสั่งด่วนสำหรับสร้างคำสั่งซื้อใหม่ในแชทลูกค้า
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+            พิมพ์ <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-indigo-600 dark:text-indigo-400 font-bold">#รับยอด (จำนวนเงิน)</code> เช่น <code class="font-mono">#รับยอด 100</code> ในแชทลูกค้าแล้วรีเฟรชหน้าเว็บ 1 ครั้ง
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        id="btn-home-copy-cmd"
+        class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 active:scale-95 transition inline-flex items-center gap-2 shrink-0 self-start sm:self-center"
+      >
+        ${ICONS.copy}
+        <span>คัดลอก #รับยอด 100</span>
+      </button>
+    </div>
+  `;
+
+  homeContainer.querySelectorAll('[data-select-topic]').forEach((item) => {
+    item.addEventListener('click', () => {
+      const topicId = item.getAttribute('data-select-topic');
+      selectCategory(topicId);
+    });
+  });
+
+  document.getElementById('btn-home-copy-cmd')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    copyQuickCommand('#รับยอด 100');
+  });
+}
+
 function renderCategoryTabs() {
   const nav = document.getElementById('category-tabs');
   if (!nav) return;
 
-  nav.innerHTML = MANUAL_CATEGORIES.map((cat) => {
+  const isTopicOrSearchView = state.activeCategoryId !== null || state.searchQuery.trim().length > 0;
+  if (!isTopicOrSearchView) {
+    nav.classList.add('hidden');
+    return;
+  }
+
+  nav.classList.remove('hidden');
+
+  const homeBtnHtml = `
+    <button
+      type="button"
+      id="btn-nav-back-home"
+      class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 inline-flex items-center gap-1.5 shrink-0 border bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 hover:opacity-90 shadow-sm"
+    >
+      ${ICONS.arrowLeft}
+      <span>หน้าแรก (เลือกหัวข้อ)</span>
+    </button>
+  `;
+
+  const tabsHtml = MANUAL_CATEGORIES.map((cat, idx) => {
     const isActive = cat.id === state.activeCategoryId && !state.searchQuery.trim();
     const doneCount = cat.steps.filter((s) => state.completedSteps[s.id]).length;
     const totalCount = cat.steps.length;
@@ -720,8 +934,7 @@ function renderCategoryTabs() {
         data-category-id="${cat.id}"
         class="${baseClasses} ${isActive ? activeClasses : inactiveClasses}"
       >
-        ${cat.iconSvg}
-        <span>${cat.title}</span>
+        <span>${idx + 1}. ${escapeHtml(cat.shortTitle)}</span>
         <span class="px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
           isActive
             ? 'bg-white/20 text-white'
@@ -729,28 +942,22 @@ function renderCategoryTabs() {
             ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
             : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
         }">
-          ${doneCount > 0 ? `${doneCount}/${totalCount}` : `${totalCount} ภาพ`}
+          ${doneCount > 0 ? `${doneCount}/${totalCount}` : `${totalCount}`}
         </span>
       </button>
     `;
   }).join('');
 
+  nav.innerHTML = homeBtnHtml + tabsHtml;
+
+  document.getElementById('btn-nav-back-home')?.addEventListener('click', () => {
+    goHomeList();
+  });
+
   nav.querySelectorAll('button[data-category-id]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-category-id');
-      if (state.searchQuery.trim()) {
-        state.searchQuery = '';
-        const input = document.getElementById('search-input');
-        if (input) input.value = '';
-        updateSearchClearButton();
-      }
-      if (state.activeCategoryId !== targetId) {
-        state.activeCategoryId = targetId;
-        state.activeSlideIndex = 0;
-        triggerSkeletonTransition(() => renderAll());
-      } else {
-        renderAll();
-      }
+      selectCategory(targetId);
     });
   });
 }
@@ -760,6 +967,7 @@ function renderCategoryHeader(filteredSteps) {
   if (!headerEl) return;
 
   if (state.searchQuery.trim()) {
+    headerEl.classList.remove('hidden');
     headerEl.innerHTML = `
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -774,34 +982,42 @@ function renderCategoryHeader(filteredSteps) {
         <button
           type="button"
           id="btn-clear-search-banner"
-          class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 active:scale-95 transition self-start sm:self-center"
+          class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 active:scale-95 transition inline-flex items-center gap-1.5 self-start sm:self-center"
         >
-          กลับไปดูตามหมวดหมู่
+          ${ICONS.arrowLeft}
+          <span>ล้างการค้นหา / กลับหน้าแรก</span>
         </button>
       </div>
     `;
-    const clearBtn = document.getElementById('btn-clear-search-banner');
-    if (clearBtn) {
-      clearBtn.addEventListener('click', () => {
-        state.searchQuery = '';
-        const input = document.getElementById('search-input');
-        if (input) input.value = '';
-        updateSearchClearButton();
-        renderAll();
-      });
-    }
+    document.getElementById('btn-clear-search-banner')?.addEventListener('click', () => {
+      goHomeList();
+    });
     return;
   }
 
   const cat = getActiveCategory();
+  if (!cat) {
+    headerEl.classList.add('hidden');
+    return;
+  }
+
+  headerEl.classList.remove('hidden');
   const doneCount = cat.steps.filter((s) => state.completedSteps[s.id]).length;
   const totalCount = cat.steps.length;
   const progressPct = Math.round((doneCount / totalCount) * 100);
 
   headerEl.innerHTML = `
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-      <div class="space-y-2 max-w-3xl">
+      <div class="space-y-2.5 max-w-3xl">
         <div class="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            id="btn-banner-back-home"
+            class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 active:scale-95 transition inline-flex items-center gap-1.5"
+          >
+            ${ICONS.arrowLeft}
+            <span>เลือกหัวข้ออื่น</span>
+          </button>
           <span class="px-2.5 py-1 rounded-md text-xs font-bold ${getBadgeClasses(cat.badgeColor)} inline-flex items-center gap-1.5">
             ${cat.iconSvg}
             <span>${cat.badgeText}</span>
@@ -859,29 +1075,49 @@ function renderCategoryHeader(filteredSteps) {
     </div>
   `;
 
-  const copyBtn = document.getElementById('btn-copy-quick-banner');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => copyQuickCommand('#รับยอด 100'));
-  }
+  document.getElementById('btn-banner-back-home')?.addEventListener('click', () => {
+    goHomeList();
+  });
 
-  const resetBtn = document.getElementById('btn-reset-checklist');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => resetCategoryChecklist(cat.id));
-  }
+  document.getElementById('btn-copy-quick-banner')?.addEventListener('click', () => {
+    copyQuickCommand('#รับยอด 100');
+  });
+
+  document.getElementById('btn-reset-checklist')?.addEventListener('click', () => {
+    resetCategoryChecklist(cat.id);
+  });
 }
 
 function renderStepsContent(filteredSteps) {
   const container = document.getElementById('steps-container');
   const emptyState = document.getElementById('empty-state');
-  if (!container || !emptyState) return;
+  const homeContainer = document.getElementById('home-view-container');
+  const viewModeWrapper = document.getElementById('view-mode-wrapper');
+  if (!container || !emptyState || !homeContainer) return;
+
+  const isHomeView = state.activeCategoryId === null && !state.searchQuery.trim();
+
+  if (isHomeView) {
+    homeContainer.classList.remove('hidden');
+    container.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    viewModeWrapper?.classList.add('hidden');
+    renderHomeTopicList();
+    return;
+  }
+
+  homeContainer.classList.add('hidden');
+  viewModeWrapper?.classList.remove('hidden');
 
   if (filteredSteps.length === 0) {
     container.innerHTML = '';
+    container.classList.add('hidden');
     emptyState.classList.remove('hidden');
     return;
   }
 
   emptyState.classList.add('hidden');
+  container.classList.remove('hidden');
 
   if (state.viewMode === 'slide') {
     renderSlideWalkthroughMode(container, filteredSteps);
@@ -978,7 +1214,6 @@ function renderGridCardsMode(container, steps) {
     })
     .join('');
 
-  // Bind Lightbox & Checklist events
   container.querySelectorAll('[data-open-lightbox]').forEach((el) => {
     el.addEventListener('click', () => {
       const idx = parseInt(el.getAttribute('data-open-lightbox'), 10);
@@ -1372,11 +1607,35 @@ function updateSearchClearButton() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Check URL hash on load (e.g., #zwiz-ship)
+  const initialHash = window.location.hash.replace('#', '');
+  if (initialHash && MANUAL_CATEGORIES.some((c) => c.id === initialHash)) {
+    state.activeCategoryId = initialHash;
+  } else {
+    state.activeCategoryId = null; // Default to Home Topic List
+  }
+
+  // Handle browser Back / Forward buttons
+  window.addEventListener('popstate', () => {
+    const hashId = window.location.hash.replace('#', '');
+    if (hashId && MANUAL_CATEGORIES.some((c) => c.id === hashId)) {
+      state.activeCategoryId = hashId;
+    } else {
+      state.activeCategoryId = null;
+    }
+    renderAll();
+  });
+
   updateThemeUI();
   updateOnlineStatus();
   renderAll();
   loadChecklistState();
   setupPullToRefresh();
+
+  // Brand Home Button
+  document.getElementById('btn-brand-home')?.addEventListener('click', () => {
+    goHomeList();
+  });
 
   // Theme Toggles
   document.getElementById('btn-theme-desktop')?.addEventListener('click', toggleTheme);
@@ -1414,13 +1673,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('btn-reset-empty')?.addEventListener('click', () => {
-    state.searchQuery = '';
-    if (searchInput) searchInput.value = '';
-    updateSearchClearButton();
-    renderAll();
+    goHomeList();
   });
 
-  // Lightbox Events (Backdrop Click & Inner StopPropagation per Section 2)
+  // Lightbox Events
   document.getElementById('lightbox-backdrop')?.addEventListener('click', closeLightbox);
   document.getElementById('lightbox-container')?.addEventListener('click', (e) => e.stopPropagation());
   document.getElementById('btn-close-lightbox')?.addEventListener('click', closeLightbox);
@@ -1489,6 +1745,8 @@ document.addEventListener('DOMContentLoaded', () => {
         closeCheatsheet();
       } else if (isTyping) {
         document.activeElement.blur();
+      } else if (state.activeCategoryId !== null) {
+        goHomeList();
       }
       return;
     }
@@ -1515,7 +1773,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (state.viewMode === 'slide') {
+    if (state.viewMode === 'slide' && state.activeCategoryId !== null) {
       const steps = getFilteredSteps();
       if (e.key === 'ArrowLeft' && state.activeSlideIndex > 0) {
         state.activeSlideIndex--;

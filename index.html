@@ -50,7 +50,6 @@
       font-family: 'Prompt', 'Sarabun', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-    /* Custom subtle scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -97,10 +96,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3.5 gap-3">
         
-        <!-- Brand & Title -->
+        <!-- Brand & Title (Clicking returns to Home List) -->
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0">
+          <button
+            id="btn-brand-home"
+            type="button"
+            class="flex items-center gap-3 text-left group focus:outline-none active:scale-95 transition-transform"
+            title="กลับหน้าแรก (เลือกหัวข้อคู่มือ)"
+          >
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 group-hover:bg-indigo-700 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 transition-colors">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
@@ -108,7 +112,7 @@
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                   คู่มือพนักงานขาย Zwiz &amp; Shippop
                 </h1>
                 <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 inline-flex items-center gap-1">
@@ -135,7 +139,7 @@
                 แนวทางปฏิบัติงานมาตรฐาน (SOP) ครบ 5 หมวดหมู่ พร้อมภาพชี้จุดทุกขั้นตอน
               </p>
             </div>
-          </div>
+          </button>
 
           <!-- Mobile Action Buttons -->
           <div class="flex items-center gap-2 md:hidden">
@@ -174,8 +178,8 @@
             <kbd id="search-kbd" class="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded pointer-events-none">/</kbd>
           </div>
 
-          <!-- View Mode Switcher (Grid vs Slide Mode) -->
-          <div class="inline-flex rounded-xl p-1 bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 shrink-0">
+          <!-- View Mode Switcher (Shown only when inside a topic or searching) -->
+          <div id="view-mode-wrapper" class="hidden inline-flex rounded-xl p-1 bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 shrink-0">
             <button
               id="btn-view-grid"
               type="button"
@@ -232,8 +236,8 @@
 
       </div>
 
-      <!-- Category Navigation Tabs -->
-      <nav id="category-tabs" class="flex items-center gap-2 overflow-x-auto py-2.5 no-scrollbar border-t border-slate-100 dark:border-slate-800/70" aria-label="หมวดหมู่คู่มือ">
+      <!-- Category Navigation Bar (Shown when viewing a specific topic) -->
+      <nav id="category-tabs" class="hidden flex items-center gap-2 overflow-x-auto py-2.5 no-scrollbar border-t border-slate-100 dark:border-slate-800/70" aria-label="หมวดหมู่คู่มือ">
         <!-- Rendered dynamically by app.js -->
       </nav>
     </div>
@@ -242,8 +246,17 @@
   <!-- Main Content Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- Category Hero Banner & Checklist Progress -->
-    <section id="category-header" class="mb-6 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm">
+    <!-- =============================================================== -->
+    <!-- HOME VIEW: TOPIC SELECTION LIST (Default Landing View)          -->
+    <!-- =============================================================== -->
+    <section id="home-view-container" class="max-w-4xl mx-auto space-y-5">
+      <!-- Populated dynamically by app.js -->
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- TOPIC DETAIL VIEW: HEADER & STEPS                               -->
+    <!-- =============================================================== -->
+    <section id="category-header" class="hidden mb-6 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm">
       <!-- Populated dynamically by app.js -->
     </section>
 
@@ -267,7 +280,7 @@
     </section>
 
     <!-- Steps Content Area (Grid Mode or Slide Walkthrough Mode) -->
-    <section id="steps-container">
+    <section id="steps-container" class="hidden">
       <!-- Populated dynamically by app.js -->
     </section>
 
@@ -295,7 +308,7 @@
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
           <path d="M3 3v5h5"/>
         </svg>
-        ล้างคำค้นหาแล้วดูทั้งหมด
+        ล้างคำค้นหาแล้วกลับหน้าแรก
       </button>
     </section>
 
@@ -330,7 +343,7 @@
       id="lightbox-container"
       class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-modal-in flex flex-col max-h-[92vh]"
     >
-      <!-- 5. Header (Top Bar) -->
+      <!-- Header (Top Bar) -->
       <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-4 shrink-0">
         <div class="flex items-center gap-3 min-w-0">
           <span id="lightbox-step-badge" class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
@@ -340,7 +353,7 @@
             รายละเอียดขั้นตอน
           </h3>
         </div>
-        <!-- 6. Close Button -->
+        <!-- Close Button -->
         <button
           id="btn-close-lightbox"
           type="button"
@@ -354,7 +367,7 @@
         </button>
       </div>
 
-      <!-- 7. Body Content -->
+      <!-- Body Content -->
       <div class="p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto">
         <div class="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
           <img
@@ -374,12 +387,11 @@
             type="button"
             class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition active:scale-95 inline-flex items-center gap-2 shrink-0 self-start sm:self-center"
           >
-            <!-- Populated by JS -->
           </button>
         </div>
       </div>
 
-      <!-- 8. Action Bar (Footer) -->
+      <!-- Action Bar (Footer) -->
       <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800/80 flex gap-3 justify-between items-center shrink-0">
         <span id="lightbox-counter" class="text-xs font-semibold text-slate-500 dark:text-slate-400">
           ภาพที่ 1 / 11
