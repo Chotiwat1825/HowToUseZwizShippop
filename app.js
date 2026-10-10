@@ -1,6 +1,6 @@
 /**
  * คู่มือแนวทางการใช้งาน Zwiz & Shippop สำหรับพนักงานขาย (ร้านมรุกข)
- * ออกแบบสำหรับผู้สูงอายุและพนักงานทุกคน: ตัวหนังสือใหญ่หนา ปุ่มขนาดใหญ่พิเศษ ไม่ซับซ้อน
+ * ออกแบบให้พอดี 1 หน้าจอ (ไม่ต้องเลื่อนลงไปหาปุ่ม) ตัวหนังสือใหญ่หนา ปุ่มใหญ่ สมูททุกการกด
  */
 
 const MANUAL_CATEGORIES = [
@@ -209,8 +209,8 @@ const MANUAL_CATEGORIES = [
       {
         stepNumber: 8,
         title: 'พิมพ์ "#รับยอด (จำนวนเงิน)" แล้วรีเฟรชหน้าเว็บ 1 ครั้ง',
-        description: '1) ในช่องแชทลูกค้า ให้พิมพ์ #รับยอด ตามด้วยจำนวนเงิน (เช่น #รับยอด 100) แล้วกดส่ง  2) กดรีเฟรชหน้าเว็บ 1 ครั้ง จะเห็นคำสั่งซื้อใหม่ขึ้นมาทางขวา แล้วกรอกที่อยู่ส่งใหม่ได้เลย',
-        tip: 'กดปุ่มสีม่วงด้านล่างนี้เพื่อคัดลอกคำว่า #รับยอด 100 ไปวางได้เลย',
+        description: '1) ในช่องแชทลูกค้า พิมพ์ #รับยอด ตามด้วยจำนวนเงิน (เช่น #รับยอด 100)  2) รีเฟรชหน้าเว็บ 1 ครั้ง จะเห็นคำสั่งซื้อใหม่ขึ้นมาทางขวา แล้วกรอกที่อยู่ส่งใหม่ได้เลย',
+        tip: 'กดปุ่มคัดลอกคำว่า #รับยอด 100 ด้านขวาบนเพื่อนำไปวางได้เลย',
         copyCommand: '#รับยอด 100',
         image: 'assets/slides/cancel-order/slide_08.png'
       }
@@ -294,24 +294,22 @@ const MANUAL_CATEGORIES = [
 // Application State
 // ============================================================================
 const state = {
-  activeCategoryId: null, // null = หน้าแรก (เลือกหัวข้อ), string = หน้าดูขั้นตอนทีละภาพ
+  activeCategoryId: null, // null = หน้าแรก, string = หน้าดูขั้นตอนพอดีจอ
   activeSlideIndex: 0,    // เริ่มที่ภาพที่ 1 เสมอ (index 0)
   lightboxOpen: false,
-  toastTimer: null
+  toastTimer: null,
+  preloadedCategories: {}
 };
 
 // ============================================================================
-// SVG Icons (Large, Clear, No Emojis)
+// SVG Icons
 // ============================================================================
 const ICONS = {
-  sun: `<svg class="w-6 h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
-  moon: `<svg class="w-6 h-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
-  arrowLeft: `<svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
-  arrowRight: `<svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
-  zoomIn: `<svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`,
-  check: `<svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  copy: `<svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
-  info: `<svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+  sun: `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  moon: `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+  arrowLeft: `<svg class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  arrowRight: `<svg class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+  check: `<svg class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
 };
 
 function getNumberBoxStyle(color) {
@@ -325,6 +323,18 @@ function getNumberBoxStyle(color) {
     default:
       return 'bg-indigo-600 text-white';
   }
+}
+
+// ============================================================================
+// Preload Images for Instant Zero-Lag Transitions
+// ============================================================================
+function preloadCategoryImages(category) {
+  if (!category || state.preloadedCategories[category.id]) return;
+  state.preloadedCategories[category.id] = true;
+  category.steps.forEach((s) => {
+    const img = new Image();
+    img.src = s.image;
+  });
 }
 
 // ============================================================================
@@ -351,7 +361,7 @@ function toggleTheme() {
 }
 
 // ============================================================================
-// Toast Notification
+// Toast Notification & Copy
 // ============================================================================
 function showToast(message) {
   const container = document.getElementById('toast-container');
@@ -364,7 +374,7 @@ function showToast(message) {
 
   state.toastTimer = setTimeout(() => {
     container.classList.add('hidden');
-  }, 3500);
+  }, 3000);
 }
 
 async function copyText(text) {
@@ -391,7 +401,7 @@ function openHomeList(pushHash = true) {
   if (pushHash && window.location.hash) {
     history.pushState(null, '', window.location.pathname + window.location.search);
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
   renderApp();
 }
 
@@ -399,79 +409,94 @@ function openTopicAtFirstStep(categoryId, pushHash = true) {
   const cat = MANUAL_CATEGORIES.find((c) => c.id === categoryId);
   if (!cat) return;
 
+  preloadCategoryImages(cat);
   state.activeCategoryId = cat.id;
-  state.activeSlideIndex = 0; // เปิดไปที่ ภาพที่ 1 ทันทีเสมอ
+  state.activeSlideIndex = 0; // เปิดไปที่ ภาพที่ 1 เสมอ
   if (pushHash) {
     history.pushState({ categoryId: cat.id }, '', `#${cat.id}`);
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  renderApp();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  renderApp('next');
 }
 
-function goToStep(index) {
+function goToStep(newIndex) {
   const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
   if (!cat) return;
-  if (index < 0 || index >= cat.steps.length) return;
+  if (newIndex < 0 || newIndex >= cat.steps.length || newIndex === state.activeSlideIndex) return;
 
-  state.activeSlideIndex = index;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  renderApp();
+  const direction = newIndex > state.activeSlideIndex ? 'next' : 'prev';
+  state.activeSlideIndex = newIndex;
+  updateStepViewerInPlace(cat, direction);
 }
 
 // ============================================================================
 // Rendering
 // ============================================================================
-function renderApp() {
+function renderApp(direction = 'next') {
   const homeView = document.getElementById('home-view');
   const stepViewer = document.getElementById('step-viewer');
   const headerBackBtn = document.getElementById('btn-header-back-home');
+  const headerMainTitle = document.getElementById('header-main-title');
+  const headerSubTitle = document.getElementById('header-sub-title');
 
   if (!homeView || !stepViewer) return;
 
   if (state.activeCategoryId === null) {
+    // ปลดล็อกความสูงหน้าจอเพื่อให้หน้าแรกเลื่อนดูหัวข้อได้ตามปกติ
+    document.body.classList.remove('h-dvh', 'overflow-hidden');
     headerBackBtn?.classList.add('hidden');
+    if (headerMainTitle) headerMainTitle.textContent = 'คู่มือพนักงานขาย (ร้านมรุกข)';
+    if (headerSubTitle) headerSubTitle.textContent = 'ระบบส่งพัสดุ Zwiz & Shippop';
+
     stepViewer.classList.add('hidden');
     homeView.classList.remove('hidden');
     renderHomeView(homeView);
   } else {
+    // ล็อกความสูงหน้าจอเป็น 100dvh พอดีเป๊ะ เพื่อให้เห็นปุ่ม ก่อนหน้า/ถัดไป และ 1..11 ทันทีโดยไม่ต้องเลื่อนจอ!
+    document.body.classList.add('h-dvh', 'overflow-hidden');
     headerBackBtn?.classList.remove('hidden');
+
+    const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
+    if (cat) {
+      preloadCategoryImages(cat);
+      if (headerMainTitle) headerMainTitle.textContent = `${cat.number}. ${cat.title}`;
+      if (headerSubTitle) headerSubTitle.textContent = 'กดปุ่ม ถัดไป หรือกดตัวเลขด้านล่างเพื่อเปลี่ยนภาพ';
+    }
+
     homeView.classList.add('hidden');
     stepViewer.classList.remove('hidden');
-    renderStepViewer(stepViewer);
+    updateStepViewerInPlace(cat, direction);
   }
 }
 
 /**
- * 1. หน้าแรก: รายการหัวข้อคู่มือ ขนาดใหญ่ ตัวหนังสือหนา กดปุ๊บเข้าภาพที่ 1 ทันที
+ * 1. หน้าแรก: รายการหัวข้อคู่มือ ขนาดใหญ่ ตัวหนังสือหนา
  */
 function renderHomeView(container) {
   container.innerHTML = `
-    <!-- หัวข้อหน้าแรก -->
-    <div class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-sm">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-2">
+    <div class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-1">
         กดเลือกหัวข้อคู่มือที่ต้องการดู
       </h2>
       <p class="text-base sm:text-xl font-semibold text-slate-600 dark:text-slate-300">
-        เมื่อกดเลือกหัวข้อ จะเปิดไปที่ <span class="text-indigo-600 dark:text-indigo-400 underline">ภาพขั้นตอนที่ 1</span> ให้ดูทีละภาพทันที
+        กดเลือกหัวข้อด้านล่างเพื่อเปิดดู <span class="text-indigo-600 dark:text-indigo-400 underline">ภาพขั้นตอนที่ 1</span> ทันที
       </p>
     </div>
 
-    <!-- รายการทั้ง 5 หัวข้อ -->
-    <div class="space-y-4">
+    <div class="space-y-3.5">
       ${MANUAL_CATEGORIES.map((cat) => {
         const total = cat.steps.length;
         return `
           <button
             type="button"
             data-open-topic="${cat.id}"
-            class="w-full text-left bg-white hover:bg-indigo-50/50 dark:bg-slate-900 dark:hover:bg-slate-800/90 border-2 border-slate-300 hover:border-indigo-600 dark:border-slate-700 dark:hover:border-indigo-500 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-xl transition-all active:scale-[0.99] flex flex-col sm:flex-row sm:items-center justify-between gap-5 group"
+            class="w-full text-left bg-white hover:bg-indigo-50/50 dark:bg-slate-900 dark:hover:bg-slate-800/90 border-2 border-slate-300 hover:border-indigo-600 dark:border-slate-700 dark:hover:border-indigo-500 rounded-3xl p-4 sm:p-5 shadow-sm hover:shadow-xl transition-all active:scale-[0.99] flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
           >
-            <!-- ด้านซ้าย: ตัวเลขหัวข้อ + ชื่อเรื่องตัวใหญ่หนา -->
-            <div class="flex items-start sm:items-center gap-4 sm:gap-5">
+            <div class="flex items-start sm:items-center gap-4">
               <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${getNumberBoxStyle(cat.color)} flex items-center justify-center text-2xl sm:text-3xl font-extrabold shadow-md shrink-0">
                 ${cat.number}
               </div>
-              <div class="space-y-1.5">
+              <div class="space-y-1">
                 <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 leading-snug">
                   ${escapeHtml(cat.title)}
                 </h3>
@@ -481,9 +506,8 @@ function renderHomeView(container) {
               </div>
             </div>
 
-            <!-- ด้านขวา: ปุ่มใหญ่ กดเปิดดูคู่มือ -->
             <div class="w-full sm:w-auto shrink-0">
-              <span class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-indigo-600 group-hover:bg-indigo-700 text-white text-lg sm:text-xl font-extrabold shadow-md inline-flex items-center justify-center gap-3 transition-colors">
+              <span class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-indigo-600 group-hover:bg-indigo-700 text-white text-lg sm:text-xl font-extrabold shadow-md inline-flex items-center justify-center gap-2.5 transition-colors">
                 <span>เปิดดูคู่มือ (${total} ภาพ)</span>
                 ${ICONS.arrowRight}
               </span>
@@ -503,10 +527,9 @@ function renderHomeView(container) {
 }
 
 /**
- * 2. หน้าดูขั้นตอน: เปิดมาเจอ ภาพที่ 1 จาก X ทันที พร้อมปุ่ม "ก่อนหน้า / ถัดไป" ขนาดใหญ่พิเศษ
+ * 2. อัปเดตหน้าดูขั้นตอนแบบ In-Place (ไม่รีเซ็ตหน้าจอ สมูทลื่นไหล และเห็นปุ่มครบ 100% ใน 1 จอ)
  */
-function renderStepViewer(container) {
-  const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
+function updateStepViewerInPlace(cat, direction = 'next') {
   if (!cat) {
     openHomeList();
     return;
@@ -519,191 +542,136 @@ function renderStepViewer(container) {
   const isFirst = state.activeSlideIndex === 0;
   const isLast = state.activeSlideIndex === totalSteps - 1;
 
-  container.innerHTML = `
-    <!-- แถบบอกหัวข้อปัจจุบัน และตัวเลข "ภาพที่ X จาก Y" ขนาดใหญ่ -->
-    <div class="bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <span class="w-10 h-10 rounded-xl ${getNumberBoxStyle(cat.color)} flex items-center justify-center text-xl font-extrabold shrink-0">
-          ${cat.number}
-        </span>
-        <h2 class="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-          ${escapeHtml(cat.title)}
-        </h2>
-      </div>
+  // Elements
+  const badgeCounter = document.getElementById('step-badge-counter');
+  const titleText = document.getElementById('step-title-text');
+  const descText = document.getElementById('step-desc-text');
+  const tipText = document.getElementById('step-tip-text');
+  const copyBtn = document.getElementById('btn-step-copy-cmd');
+  const copyLabel = document.getElementById('btn-step-copy-label');
+  const mainImage = document.getElementById('step-main-image');
+  const instructionBox = document.getElementById('step-instruction-box');
+  const prevBtn = document.getElementById('btn-prev-step');
+  const nextBtn = document.getElementById('btn-next-step');
+  const pillsContainer = document.getElementById('step-number-pills');
 
-      <div class="px-5 py-2.5 rounded-2xl bg-indigo-600 text-white text-lg sm:text-2xl font-extrabold shadow-sm">
-        ภาพที่ ${step.stepNumber} จาก ${totalSteps}
-      </div>
-    </div>
+  // 1) Update Top Instruction Banner
+  if (badgeCounter) badgeCounter.textContent = `ภาพที่ ${step.stepNumber} จาก ${totalSteps}`;
+  if (titleText) titleText.textContent = `ขั้นตอนที่ ${step.stepNumber} : ${step.title}`;
+  if (descText) descText.textContent = step.description;
 
-    <!-- กล่องคำอธิบายขั้นตอน (ตัวหนังสือใหญ่หนา อ่านง่าย) + รูปภาพประกอบ -->
-    <div class="bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-3xl overflow-hidden shadow-lg">
-      
-      <!-- ส่วนข้อความอธิบายขั้นตอน ด้านบนภาพ -->
-      <div class="p-5 sm:p-7 border-b-2 border-slate-200 dark:border-slate-800 bg-amber-50/70 dark:bg-slate-800/60 space-y-3">
-        <div class="text-2xl sm:text-3xl font-extrabold text-indigo-700 dark:text-indigo-300 leading-snug">
-          ขั้นตอนที่ ${step.stepNumber} : ${escapeHtml(step.title)}
-        </div>
-        <p class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100 leading-relaxed">
-          ${escapeHtml(step.description)}
-        </p>
-        ${
-          step.tip
-            ? `
-          <div class="pt-1 flex items-center gap-2.5 text-base sm:text-xl font-bold text-rose-600 dark:text-rose-400">
-            ${ICONS.info}
-            <span>จุดสังเกต: ${escapeHtml(step.tip)}</span>
-          </div>
-        `
-            : ''
-        }
-        ${
-          step.copyCommand
-            ? `
-          <div class="pt-2">
-            <button
-              type="button"
-              id="btn-step-copy-cmd"
-              class="px-6 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-lg sm:text-xl font-extrabold shadow-lg active:scale-95 transition inline-flex items-center gap-3"
-            >
-              ${ICONS.copy}
-              <span>กดคัดลอกคำว่า "${escapeHtml(step.copyCommand)}"</span>
-            </button>
-          </div>
-        `
-            : ''
-        }
-      </div>
+  if (tipText) {
+    if (step.tip) {
+      tipText.textContent = `จุดสังเกต: ${step.tip}`;
+      tipText.classList.remove('hidden');
+    } else {
+      tipText.classList.add('hidden');
+    }
+  }
 
-      <!-- รูปภาพสไลด์ขนาดใหญ่ (คลิกเพื่อขยายเต็มจอได้) -->
-      <div
-        id="step-image-wrapper"
-        class="relative bg-slate-200 dark:bg-slate-950 flex flex-col items-center justify-center cursor-pointer p-2 sm:p-4"
-        title="แตะที่รูปเพื่อขยายเต็มจอ"
+  if (copyBtn && copyLabel) {
+    if (step.copyCommand) {
+      copyLabel.textContent = `กดคัดลอก "${step.copyCommand}"`;
+      copyBtn.classList.remove('hidden');
+      copyBtn.classList.add('inline-flex');
+      copyBtn.onclick = () => copyText(step.copyCommand);
+    } else {
+      copyBtn.classList.add('hidden');
+      copyBtn.classList.remove('inline-flex');
+    }
+  }
+
+  // 2) Update Image with Smooth Slide/Fade Animation
+  if (mainImage) {
+    mainImage.classList.remove('animate-step-next', 'animate-step-prev');
+    void mainImage.offsetWidth; // Reflow to restart animation cleanly
+    mainImage.src = step.image;
+    mainImage.alt = step.title;
+    mainImage.classList.add(direction === 'prev' ? 'animate-step-prev' : 'animate-step-next');
+  }
+
+  if (instructionBox) {
+    instructionBox.classList.remove('animate-step-next', 'animate-step-prev');
+    void instructionBox.offsetWidth;
+    instructionBox.classList.add(direction === 'prev' ? 'animate-step-prev' : 'animate-step-next');
+  }
+
+  // 3) Update Giant Previous Button
+  if (prevBtn) {
+    prevBtn.disabled = isFirst;
+    prevBtn.className = `h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold border-2 transition-all active:scale-95 flex items-center justify-center gap-2 ${
+      isFirst
+        ? 'bg-slate-100 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-800 cursor-not-allowed'
+        : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-sm'
+    }`;
+    prevBtn.innerHTML = `
+      ${ICONS.arrowLeft}
+      <span>ก่อนหน้า ${!isFirst ? `(ภาพที่ ${step.stepNumber - 1})` : ''}</span>
+    `;
+    prevBtn.onclick = () => {
+      if (!isFirst) goToStep(state.activeSlideIndex - 1);
+    };
+  }
+
+  // 4) Update Giant Next / Finish Button
+  if (nextBtn) {
+    if (!isLast) {
+      nextBtn.className =
+        'h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 transition-all active:scale-95 flex items-center justify-center gap-2';
+      nextBtn.innerHTML = `
+        <span>ถัดไป (ภาพที่ ${step.stepNumber + 1})</span>
+        ${ICONS.arrowRight}
+      `;
+      nextBtn.onclick = () => goToStep(state.activeSlideIndex + 1);
+    } else {
+      nextBtn.className =
+        'h-14 sm:h-16 px-3 sm:px-6 rounded-2xl text-base sm:text-2xl font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25 transition-all active:scale-95 flex items-center justify-center gap-2';
+      nextBtn.innerHTML = `
+        ${ICONS.check}
+        <span>เสร็จสิ้น (กลับหน้าแรก)</span>
+      `;
+      nextBtn.onclick = () => openHomeList();
+    }
+  }
+
+  // 5) Update Direct Step Number Buttons (1 2 3 ... 11)
+  if (pillsContainer) {
+    pillsContainer.innerHTML = cat.steps
+      .map(
+        (s, i) => `
+      <button
+        type="button"
+        data-jump-index="${i}"
+        class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl text-sm sm:text-lg font-extrabold border-2 transition-all active:scale-95 ${
+          i === state.activeSlideIndex
+            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-105'
+            : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-indigo-500'
+        }"
       >
-        <img
-          src="${step.image}"
-          alt="${escapeHtml(step.title)}"
-          class="w-full max-h-[68vh] object-contain rounded-xl bg-white shadow-sm"
-        />
-        <div class="mt-3 px-4 py-2 rounded-xl bg-slate-900/85 text-white text-sm sm:text-base font-bold inline-flex items-center gap-2">
-          ${ICONS.zoomIn}
-          <span>แตะที่รูปภาพเพื่อขยายดูขนาดใหญ่เต็มจอ</span>
-        </div>
-      </div>
+        ${s.stepNumber}
+      </button>
+    `
+      )
+      .join('');
 
-      <!-- ปุ่ม "ก่อนหน้า" และ "ถัดไป" ขนาดใหญ่พิเศษ (กดง่ายสำหรับผู้สูงอายุ) -->
-      <div class="p-5 sm:p-6 bg-slate-50 dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 space-y-5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          
-          <!-- ปุ่ม ก่อนหน้า -->
-          <button
-            type="button"
-            id="btn-prev-step"
-            ${isFirst ? 'disabled' : ''}
-            class="min-h-[68px] sm:min-h-[78px] px-6 py-4 rounded-2xl text-xl sm:text-2xl font-extrabold border-2 transition active:scale-95 flex items-center justify-center gap-3 ${
-              isFirst
-                ? 'bg-slate-200 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 border-slate-300 dark:border-slate-800 cursor-not-allowed'
-                : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-md'
-            }"
-          >
-            ${ICONS.arrowLeft}
-            <span>ก่อนหน้า ${!isFirst ? `(ภาพที่ ${step.stepNumber - 1})` : ''}</span>
-          </button>
-
-          <!-- ปุ่ม ถัดไป (หรือ เสร็จสิ้นกลับหน้าแรก เมื่ออยู่ภาพสุดท้าย) -->
-          ${
-            !isLast
-              ? `
-            <button
-              type="button"
-              id="btn-next-step"
-              class="min-h-[68px] sm:min-h-[78px] px-6 py-4 rounded-2xl text-xl sm:text-2xl font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/25 transition active:scale-95 flex items-center justify-center gap-3"
-            >
-              <span>ถัดไป (ภาพที่ ${step.stepNumber + 1})</span>
-              ${ICONS.arrowRight}
-            </button>
-          `
-              : `
-            <button
-              type="button"
-              id="btn-finish-home"
-              class="min-h-[68px] sm:min-h-[78px] px-6 py-4 rounded-2xl text-xl sm:text-2xl font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center gap-3"
-            >
-              ${ICONS.check}
-              <span>ครบทุกขั้นตอน (กลับหน้าแรก)</span>
-            </button>
-          `
-          }
-        </div>
-
-        <!-- ปุ่มตัวเลขข้ามไปภาพที่ต้องการ (ปุ่มใหญ่ กดง่าย) -->
-        <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span class="text-base sm:text-lg font-extrabold text-slate-700 dark:text-slate-300">
-            กดเลือกหมายเลขภาพโดยตรง:
-          </span>
-          <div class="flex items-center gap-2 flex-wrap justify-center">
-            ${cat.steps
-              .map(
-                (s, i) => `
-              <button
-                type="button"
-                data-jump-index="${i}"
-                class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-lg sm:text-xl font-extrabold border-2 transition active:scale-95 ${
-                  i === state.activeSlideIndex
-                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-105'
-                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-indigo-500'
-                }"
-              >
-                ${s.stepNumber}
-              </button>
-            `
-              )
-              .join('')}
-          </div>
-        </div>
-      </div>
-
-    </div>
-  `;
-
-  // Bind Prev / Next / Finish / Jump / Copy / Lightbox
-  document.getElementById('btn-prev-step')?.addEventListener('click', () => {
-    if (state.activeSlideIndex > 0) {
-      goToStep(state.activeSlideIndex - 1);
-    }
-  });
-
-  document.getElementById('btn-next-step')?.addEventListener('click', () => {
-    if (state.activeSlideIndex < totalSteps - 1) {
-      goToStep(state.activeSlideIndex + 1);
-    }
-  });
-
-  document.getElementById('btn-finish-home')?.addEventListener('click', () => {
-    openHomeList();
-  });
-
-  document.getElementById('btn-step-copy-cmd')?.addEventListener('click', () => {
-    if (step.copyCommand) copyText(step.copyCommand);
-  });
-
-  document.getElementById('step-image-wrapper')?.addEventListener('click', () => {
-    openLightbox(step);
-  });
-
-  container.querySelectorAll('[data-jump-index]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.getAttribute('data-jump-index'), 10);
-      goToStep(idx);
+    pillsContainer.querySelectorAll('[data-jump-index]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-jump-index'), 10);
+        goToStep(idx);
+      });
     });
-  });
+  }
 }
 
 // ============================================================================
 // Lightbox (Full-screen Image Zoom)
 // ============================================================================
-function openLightbox(step) {
+function openLightbox() {
+  const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
+  if (!cat) return;
+  const step = cat.steps[state.activeSlideIndex];
+  if (!step) return;
+
   state.lightboxOpen = true;
   const backdrop = document.getElementById('lightbox-backdrop');
   const titleEl = document.getElementById('lightbox-title');
@@ -759,12 +727,38 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-brand-home')?.addEventListener('click', () => openHomeList());
   document.getElementById('btn-header-back-home')?.addEventListener('click', () => openHomeList());
   document.getElementById('btn-theme-toggle')?.addEventListener('click', toggleTheme);
+  document.getElementById('step-image-wrapper')?.addEventListener('click', openLightbox);
 
   document.getElementById('lightbox-backdrop')?.addEventListener('click', closeLightbox);
   document.getElementById('lightbox-container')?.addEventListener('click', (e) => e.stopPropagation());
   document.getElementById('btn-close-lightbox')?.addEventListener('click', closeLightbox);
 
-  // Keyboard support for convenience
+  // Touch Swipe Left / Right on Image for Mobile Smoothness
+  let touchStartX = 0;
+  const imgWrapper = document.getElementById('step-image-wrapper');
+  imgWrapper?.addEventListener(
+    'touchstart',
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    },
+    { passive: true }
+  );
+  imgWrapper?.addEventListener(
+    'touchend',
+    (e) => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
+      if (!cat) return;
+      if (diffX < -50 && state.activeSlideIndex < cat.steps.length - 1) {
+        goToStep(state.activeSlideIndex + 1);
+      } else if (diffX > 50 && state.activeSlideIndex > 0) {
+        goToStep(state.activeSlideIndex - 1);
+      }
+    },
+    { passive: true }
+  );
+
+  // Keyboard support
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (state.lightboxOpen) {
