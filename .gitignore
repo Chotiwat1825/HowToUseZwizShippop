@@ -1,0 +1,5 @@
+# Ignore raw PowerPoint source files so the GitHub Pages deployment stays fast and lightweight
+*.pptx
+~$*.pptx
+.DS_Store
+Thumbs.db
