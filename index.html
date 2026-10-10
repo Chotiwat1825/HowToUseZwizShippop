@@ -49,11 +49,20 @@
     body {
       font-family: 'Prompt', 'Sarabun', sans-serif;
       -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
+    /* Hide scrollbar for horizontal step strip on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
     @keyframes stepSlideNext {
       0% {
-        opacity: 0.25;
-        transform: translateX(18px);
+        opacity: 0.3;
+        transform: translateX(14px);
       }
       100% {
         opacity: 1;
@@ -62,8 +71,8 @@
     }
     @keyframes stepSlidePrev {
       0% {
-        opacity: 0.25;
-        transform: translateX(-18px);
+        opacity: 0.3;
+        transform: translateX(-14px);
       }
       100% {
         opacity: 1;
@@ -81,10 +90,10 @@
       }
     }
     .animate-step-next {
-      animation: stepSlideNext 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: stepSlideNext 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .animate-step-prev {
-      animation: stepSlidePrev 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: stepSlidePrev 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .animate-view-in {
       animation: viewFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -94,58 +103,39 @@
 <body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-dvh flex flex-col transition-colors duration-200">
 
   <!-- =============================================================== -->
-  <!-- TOP HEADER BAR                                                  -->
+  <!-- MAIN SITE HEADER (Shown on Home Page; Hidden in Step Viewer!)   -->
   <!-- =============================================================== -->
-  <header class="shrink-0 bg-white/95 backdrop-blur-md border-b-2 border-slate-200 shadow-sm dark:bg-slate-900/95 dark:border-slate-800 z-30">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
-      
-      <!-- Left: Brand / Home Button -->
+  <header id="main-site-header" class="shrink-0 bg-white/95 backdrop-blur-md border-b-2 border-slate-200 shadow-sm dark:bg-slate-900/95 dark:border-slate-800 z-30">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
       <button
         id="btn-brand-home"
         type="button"
-        class="flex items-center gap-2.5 text-left group focus:outline-none active:scale-95 transition-transform min-w-0"
+        class="flex items-center gap-3 text-left group focus:outline-none active:scale-95 transition-transform min-w-0"
       >
-        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-600 group-hover:bg-indigo-700 text-white flex items-center justify-center shadow-sm shrink-0">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-indigo-600 group-hover:bg-indigo-700 text-white flex items-center justify-center shadow-sm shrink-0">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
           </svg>
         </div>
         <div class="truncate">
-          <h1 id="header-main-title" class="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+          <h1 class="text-lg sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
             คู่มือพนักงานขาย (ร้านมรุกข)
           </h1>
-          <p id="header-sub-title" class="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 truncate">
+          <p class="text-xs sm:text-base font-semibold text-slate-600 dark:text-slate-300 truncate">
             ระบบส่งพัสดุ Zwiz &amp; Shippop
           </p>
         </div>
       </button>
 
-      <!-- Right: Back to Home Button & Theme Toggle -->
-      <div class="flex items-center gap-2 shrink-0">
-        <button
-          id="btn-header-back-home"
-          type="button"
-          class="hidden px-3.5 sm:px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 text-sm sm:text-lg font-extrabold shadow-sm active:scale-95 transition inline-flex items-center gap-2"
-        >
-          <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12 19 5 12 12 5"/>
-          </svg>
-          <span>เลือกหัวข้ออื่น</span>
-        </button>
-
-        <button
-          id="btn-theme-toggle"
-          type="button"
-          class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border-2 border-slate-300 dark:border-slate-700 font-bold text-sm sm:text-base active:scale-95 transition inline-flex items-center gap-1.5"
-          aria-label="สลับสีพื้นหลัง"
-        >
-          <span id="theme-icon-box"></span>
-          <span id="theme-label-text" class="hidden md:inline">โหมดสี</span>
-        </button>
-      </div>
-
+      <button
+        id="btn-theme-toggle-home"
+        type="button"
+        class="px-3.5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border-2 border-slate-300 dark:border-slate-700 font-bold text-sm sm:text-base active:scale-95 transition inline-flex items-center gap-2 shrink-0"
+      >
+        <span class="theme-icon-box"></span>
+        <span class="theme-label-text hidden sm:inline">โหมดสี</span>
+      </button>
     </div>
   </header>
 
@@ -157,125 +147,196 @@
   </main>
 
   <!-- =============================================================== -->
-  <!-- GIANT PREV / NEXT BUTTONS OUTSIDE #step-viewer                  -->
+  <!-- DESKTOP FLOATING SIDE PREV / NEXT BUTTONS (Outside #step-viewer)-->
   <!-- =============================================================== -->
   <button
     type="button"
-    id="btn-prev-step"
-    class="hidden fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[130px] sm:min-h-[170px] rounded-3xl border-2 transition-all active:scale-95 flex-col items-center justify-center gap-2 p-2.5 text-center select-none"
+    id="btn-prev-step-desktop"
+    class="hidden fixed left-2 top-1/2 -translate-y-1/2 z-40 w-20 xl:w-28 min-h-[130px] xl:min-h-[160px] rounded-2xl border-2 transition-all active:scale-95 flex-col items-center justify-center gap-1.5 p-2 text-center select-none"
   >
-    <!-- Populated dynamically -->
   </button>
 
   <button
     type="button"
-    id="btn-next-step"
-    class="hidden fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[130px] sm:min-h-[170px] rounded-3xl transition-all active:scale-95 flex-col items-center justify-center gap-2 p-2.5 text-center select-none"
+    id="btn-next-step-desktop"
+    class="hidden fixed right-2 top-1/2 -translate-y-1/2 z-40 w-20 xl:w-28 min-h-[130px] xl:min-h-[160px] rounded-2xl transition-all active:scale-95 flex-col items-center justify-center gap-1.5 p-2 text-center select-none"
   >
-    <!-- Populated dynamically -->
   </button>
 
   <!-- =============================================================== -->
-  <!-- 2. STEP VIEWER: FULL WIDTH & HEIGHT FOR MAXIMUM IMAGE SIZE      -->
+  <!-- 2. STEP VIEWER: 100% FULL SCREEN WIDTH & MAXIMIZED IMAGE        -->
   <!-- =============================================================== -->
-  <main id="step-viewer" class="hidden flex-1 flex flex-col w-full px-24 sm:px-32 lg:px-44 py-2 sm:py-3 overflow-hidden">
+  <main id="step-viewer" class="hidden flex-1 flex flex-col w-full h-dvh p-1 sm:p-2 lg:px-24 xl:px-32 overflow-hidden bg-slate-900 dark:bg-slate-950">
     
-    <!-- Top Instruction Banner -->
-    <div id="step-instruction-box" class="shrink-0 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-2 sm:px-5 sm:py-2.5 shadow-sm mb-2">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-2.5 min-w-0 flex-1">
-          <span id="step-badge-counter" class="px-3.5 py-1 rounded-xl bg-indigo-600 text-white text-sm sm:text-lg font-extrabold shrink-0">
-            ภาพที่ 1 / 11
+    <!-- Single Compact Top Bar (Merges Back Button + Step Info + Copy Command) -->
+    <div id="step-instruction-box" class="shrink-0 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-xl sm:rounded-2xl px-2.5 py-2 sm:px-4 sm:py-2.5 shadow-md mb-1.5 flex flex-col gap-1">
+      
+      <div class="flex items-center justify-between gap-2">
+        <!-- Back to Topic List Button -->
+        <button
+          id="btn-header-back-home"
+          type="button"
+          class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 text-xs sm:text-base font-extrabold shadow active:scale-95 transition inline-flex items-center gap-1.5 shrink-0"
+        >
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          <span>เลือกหัวข้ออื่น</span>
+        </button>
+
+        <!-- Step Counter + Step Title -->
+        <div class="flex items-center gap-2 min-w-0 flex-1 justify-center sm:justify-start">
+          <span id="step-badge-counter" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs sm:text-base font-extrabold shrink-0">
+            1/11
           </span>
-          <h2 id="step-title-text" class="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white truncate">
+          <h2 id="step-title-text" class="text-sm sm:text-xl font-extrabold text-slate-900 dark:text-white truncate">
             ขั้นตอนที่ 1
           </h2>
         </div>
 
-        <!-- Optional Copy Command Button (Shown on Cancel Order Step 8) -->
-        <button
-          id="btn-step-copy-cmd"
-          type="button"
-          class="hidden px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm sm:text-base font-extrabold shadow active:scale-95 transition items-center gap-1.5 shrink-0"
-        >
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-          </svg>
-          <span id="btn-step-copy-label">คัดลอก #รับยอด 100</span>
-        </button>
+        <!-- Right Quick Actions: Copy #รับยอด (if applicable) + Theme -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button
+            id="btn-step-copy-cmd"
+            type="button"
+            class="hidden px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-extrabold shadow active:scale-95 transition items-center gap-1 shrink-0"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span id="btn-step-copy-label">คัดลอก #รับยอด 100</span>
+          </button>
+
+          <button
+            id="btn-theme-toggle-viewer"
+            type="button"
+            class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700 active:scale-95 transition"
+            title="สลับสีพื้นหลัง"
+          >
+            <span class="theme-icon-box"></span>
+          </button>
+        </div>
       </div>
 
-      <p id="step-desc-text" class="mt-1 text-base sm:text-xl font-bold text-slate-800 dark:text-slate-100 leading-snug">
-        รายละเอียดขั้นตอน
-      </p>
-      <p id="step-tip-text" class="mt-0.5 text-sm sm:text-base font-bold text-rose-600 dark:text-rose-400">
-        จุดสังเกต
-      </p>
+      <!-- Concise Instruction Line -->
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-1">
+        <p id="step-desc-text" class="text-xs sm:text-lg font-bold text-slate-800 dark:text-slate-100 leading-snug">
+          รายละเอียดขั้นตอน
+        </p>
+        <p id="step-tip-text" class="text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-400">
+          จุดสังเกต
+        </p>
+      </div>
+
     </div>
 
     <!-- ============================================================= -->
-    <!-- CENTER: FULL-WIDTH INTERACTIVE MOUSE-ZOOMABLE IMAGE VIEWPORT  -->
+    <!-- MASSIVE IMAGE VIEWPORT (#step-image-viewport)                 -->
+    <!-- Takes 100% width and ~86% height of the screen!               -->
     <!-- ============================================================= -->
     <div
       id="step-image-viewport"
-      class="flex-1 min-w-0 min-h-0 relative bg-slate-200/90 dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl flex items-center justify-center p-1 sm:p-2 overflow-hidden select-none cursor-zoom-in"
+      class="flex-1 min-w-0 min-h-0 w-full relative bg-slate-950 border-2 border-slate-700/80 rounded-xl sm:rounded-2xl flex items-center justify-center overflow-hidden select-none touch-none cursor-zoom-in"
     >
       <div
         id="step-zoom-layer"
-        class="w-full h-full flex items-center justify-center transition-transform duration-75 ease-out origin-center"
+        class="w-full h-full flex items-center justify-center origin-center will-change-transform"
       >
         <img
           id="step-main-image"
           src=""
           alt=""
           draggable="false"
-          class="max-h-full max-w-full w-auto h-auto object-contain rounded-xl bg-white shadow-sm select-none pointer-events-none"
+          class="w-full h-full object-contain select-none pointer-events-none"
         />
       </div>
 
-      <!-- Floating Zoom Controls Bar (Bottom Right inside Image) -->
-      <div class="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 bg-slate-900/90 text-white px-2.5 py-1.5 rounded-xl shadow-lg border border-slate-700">
-        <span class="hidden md:inline text-xs font-bold text-slate-300 mr-1">
-          หมุนลูกกลิ้งเมาส์เพื่อซูม:
+      <!-- Floating Easy Zoom Bar (1x, 2x, 3x + +/-) for Mobile, Tablet & Desktop -->
+      <div class="absolute bottom-2 right-2 z-20 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm text-white px-2 py-1.5 rounded-xl shadow-xl border border-slate-700">
+        <span class="hidden sm:inline text-xs font-bold text-slate-300 mr-1">
+          ขยายภาพ:
         </span>
         <button
           type="button"
+          id="btn-zoom-1x"
+          class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs sm:text-sm font-extrabold active:scale-95 transition"
+        >
+          1x เต็มจอ
+        </button>
+        <button
+          type="button"
+          id="btn-zoom-2x"
+          class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-extrabold active:scale-95 transition"
+        >
+          ซูม 2x
+        </button>
+        <button
+          type="button"
+          id="btn-zoom-3x"
+          class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-extrabold active:scale-95 transition"
+        >
+          ซูม 3x
+        </button>
+        <button
+          type="button"
           id="btn-zoom-out"
-          class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
+          class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-base flex items-center justify-center active:scale-90 transition"
           title="ซูมออก"
         >
           −
         </button>
         <button
           type="button"
-          id="btn-zoom-reset"
-          class="px-2.5 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm font-extrabold text-amber-300 flex items-center justify-center active:scale-95 transition"
-          title="คลิกเพื่อรีเซ็ตขนาดภาพ 100%"
-        >
-          100%
-        </button>
-        <button
-          type="button"
           id="btn-zoom-in"
-          class="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
+          class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-base flex items-center justify-center active:scale-90 transition"
           title="ซูมเข้า"
         >
           +
         </button>
       </div>
+
+      <!-- Helper Hint Pill when Zoomed In -->
+      <div
+        id="zoom-pan-hint"
+        class="hidden absolute top-2 left-1/2 -translate-x-1/2 z-20 px-3.5 py-1 rounded-full bg-amber-500 text-slate-950 text-xs sm:text-sm font-extrabold shadow-lg pointer-events-none whitespace-nowrap"
+      >
+        ใช้นิ้วหรือเมาส์ลากเพื่อเลื่อนดูจุดต่างๆ (กด 1x เพื่อย่อกลับ)
+      </div>
     </div>
 
     <!-- ============================================================= -->
-    <!-- BOTTOM BAR: DIRECT STEP NUMBER BUTTONS (1 2 3 ... 11)         -->
+    <!-- BOTTOM CONTROL BAR: MOBILE/TABLET PREV-NEXT + 1..11 NUMBERS   -->
     <!-- ============================================================= -->
-    <div class="shrink-0 mt-2 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl px-3 py-2 sm:py-2.5 shadow-sm flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-      <span class="text-xs sm:text-base font-extrabold text-slate-700 dark:text-slate-300 mr-1">
-        กดเลือกหมายเลขภาพโดยตรง:
-      </span>
-      <div id="step-number-pills" class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
-        <!-- Populated dynamically -->
+    <div class="shrink-0 mt-1.5 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-xl sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-2 shadow-md flex items-center justify-between gap-2">
+      
+      <!-- Mobile/Tablet Previous Button (Visible on < 1024px so side buttons never cover the image!) -->
+      <button
+        type="button"
+        id="btn-prev-step-mobile"
+        class="lg:hidden h-11 sm:h-12 px-3 sm:px-5 rounded-xl text-sm sm:text-lg font-extrabold border-2 transition active:scale-95 flex items-center justify-center gap-1.5 shrink-0"
+      >
+      </button>
+
+      <!-- Single-Line Scrollable Step Numbers (1 2 3 ... 11) -->
+      <div class="flex-1 min-w-0 flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        <span class="hidden md:inline text-xs sm:text-sm font-extrabold text-slate-700 dark:text-slate-300 shrink-0 mr-1">
+          เลือกภาพ:
+        </span>
+        <div id="step-number-pills" class="flex items-center gap-1.5 shrink-0">
+          <!-- Populated dynamically -->
+        </div>
       </div>
+
+      <!-- Mobile/Tablet Next Button (Visible on < 1024px) -->
+      <button
+        type="button"
+        id="btn-next-step-mobile"
+        class="lg:hidden h-11 sm:h-12 px-3.5 sm:px-5 rounded-xl text-sm sm:text-lg font-extrabold transition active:scale-95 flex items-center justify-center gap-1.5 shrink-0"
+      >
+      </button>
+
     </div>
 
   </main>

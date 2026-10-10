@@ -292,7 +292,7 @@ const MANUAL_CATEGORIES = [
 ];
 
 // ============================================================================
-// Application & Zoom State
+// Application & Zoom / Touch State
 // ============================================================================
 const state = {
   activeCategoryId: null,
@@ -307,7 +307,17 @@ const zoomState = {
   panY: 0,
   isDragging: false,
   startX: 0,
-  startY: 0
+  startY: 0,
+  // Touch state
+  isPinching: false,
+  initialPinchDistance: 0,
+  initialPinchScale: 1,
+  pinchCenterX: 0,
+  pinchCenterY: 0,
+  lastTapTime: 0,
+  swipeStartX: 0,
+  swipeStartY: 0,
+  isSwiping: false
 };
 
 // ============================================================================
@@ -316,9 +326,12 @@ const zoomState = {
 const ICONS = {
   sun: `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   moon: `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
-  arrowLeftBig: `<svg class="w-8 h-8 sm:w-12 sm:h-12 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
-  arrowRightBig: `<svg class="w-8 h-8 sm:w-12 sm:h-12 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
-  checkBig: `<svg class="w-8 h-8 sm:w-12 sm:h-12 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+  arrowLeftBig: `<svg class="w-7 h-7 xl:w-10 xl:h-10 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  arrowRightBig: `<svg class="w-7 h-7 xl:w-10 xl:h-10 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+  checkBig: `<svg class="w-7 h-7 xl:w-10 xl:h-10 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  arrowLeftSm: `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+  arrowRightSm: `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+  checkSm: `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
 };
 
 function getNumberBoxStyle(color) {
@@ -335,13 +348,51 @@ function getNumberBoxStyle(color) {
 }
 
 // ============================================================================
-// Interactive Mouse Wheel Zoom & Drag-Pan Engine
+// Interactive Mouse Wheel Zoom, Touch Pinch-Zoom & Drag-Pan Engine
 // ============================================================================
+function updateZoomPresetButtons() {
+  const btn1x = document.getElementById('btn-zoom-1x');
+  const btn2x = document.getElementById('btn-zoom-2x');
+  const btn3x = document.getElementById('btn-zoom-3x');
+  const panHint = document.getElementById('zoom-pan-hint');
+
+  const s = zoomState.scale;
+  const activeCls = 'px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs sm:text-sm font-extrabold active:scale-95 transition shadow';
+  const inactiveCls = 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-extrabold active:scale-95 transition';
+
+  if (btn1x) btn1x.className = s < 1.5 ? activeCls : inactiveCls;
+  if (btn2x) btn2x.className = s >= 1.5 && s < 2.6 ? activeCls : inactiveCls;
+  if (btn3x) btn3x.className = s >= 2.6 ? activeCls : inactiveCls;
+
+  if (panHint) {
+    if (s > 1.05) {
+      panHint.classList.remove('hidden');
+    } else {
+      panHint.classList.add('hidden');
+    }
+  }
+}
+
+function clampPanToBounds() {
+  const viewport = document.getElementById('step-image-viewport');
+  if (!viewport || zoomState.scale <= 1) {
+    zoomState.panX = 0;
+    zoomState.panY = 0;
+    return;
+  }
+  const rect = viewport.getBoundingClientRect();
+  const maxPanX = ((zoomState.scale - 1) * rect.width) / 1.85;
+  const maxPanY = ((zoomState.scale - 1) * rect.height) / 1.85;
+  zoomState.panX = Math.max(-maxPanX, Math.min(maxPanX, zoomState.panX));
+  zoomState.panY = Math.max(-maxPanY, Math.min(maxPanY, zoomState.panY));
+}
+
 function applyZoomTransform(animate = true) {
   const zoomLayer = document.getElementById('step-zoom-layer');
   const viewport = document.getElementById('step-image-viewport');
-  const resetBtn = document.getElementById('btn-zoom-reset');
   if (!zoomLayer || !viewport) return;
+
+  clampPanToBounds();
 
   if (animate) {
     zoomLayer.classList.add('transition-transform', 'duration-100');
@@ -351,9 +402,7 @@ function applyZoomTransform(animate = true) {
 
   zoomLayer.style.transform = `translate3d(${zoomState.panX}px, ${zoomState.panY}px, 0) scale(${zoomState.scale})`;
 
-  if (resetBtn) {
-    resetBtn.textContent = `${Math.round(zoomState.scale * 100)}%`;
-  }
+  updateZoomPresetButtons();
 
   if (zoomState.scale > 1) {
     viewport.classList.remove('cursor-zoom-in');
@@ -369,22 +418,20 @@ function resetZoom(animate = true) {
   zoomState.panX = 0;
   zoomState.panY = 0;
   zoomState.isDragging = false;
+  zoomState.isPinching = false;
   applyZoomTransform(animate);
 }
 
-function zoomByStep(delta, clientX = null, clientY = null) {
+function setZoomScale(targetScale, clientX = null, clientY = null, animate = true) {
   const viewport = document.getElementById('step-image-viewport');
   const prevScale = zoomState.scale;
-  const nextScale = Math.min(4, Math.max(1, +(prevScale + delta).toFixed(2)));
-
-  if (nextScale === prevScale) return;
+  const nextScale = Math.min(4.5, Math.max(1, +targetScale.toFixed(2)));
 
   if (nextScale === 1) {
-    resetZoom(true);
+    resetZoom(animate);
     return;
   }
 
-  // If zooming toward mouse pointer, adjust pan so the point under cursor stays steady
   if (viewport && clientX !== null && clientY !== null) {
     const rect = viewport.getBoundingClientRect();
     const offsetX = clientX - (rect.left + rect.width / 2);
@@ -395,10 +442,20 @@ function zoomByStep(delta, clientX = null, clientY = null) {
   }
 
   zoomState.scale = nextScale;
-  applyZoomTransform(true);
+  applyZoomTransform(animate);
 }
 
-function setupMouseZoomAndPan() {
+function zoomByStep(delta, clientX = null, clientY = null) {
+  setZoomScale(zoomState.scale + delta, clientX, clientY, true);
+}
+
+function getTouchDistance(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.hypot(dx, dy);
+}
+
+function setupMouseAndTouchZoom() {
   const viewport = document.getElementById('step-image-viewport');
   if (!viewport) return;
 
@@ -407,19 +464,19 @@ function setupMouseZoomAndPan() {
     'wheel',
     (e) => {
       e.preventDefault();
-      const delta = e.deltaY < 0 ? 0.25 : -0.25;
+      const delta = e.deltaY < 0 ? 0.3 : -0.3;
       zoomByStep(delta, e.clientX, e.clientY);
     },
     { passive: false }
   );
 
-  // 2) Double Click to Toggle Zoom 2.2x / 1.0x
+  // 2) Double Click on Desktop to Toggle Zoom 2.2x / 1.0x
   viewport.addEventListener('dblclick', (e) => {
     if (e.target.closest('button')) return;
-    if (zoomState.scale > 1) {
+    if (zoomState.scale > 1.05) {
       resetZoom(true);
     } else {
-      zoomByStep(1.2, e.clientX, e.clientY);
+      setZoomScale(2.2, e.clientX, e.clientY, true);
     }
   });
 
@@ -447,18 +504,133 @@ function setupMouseZoomAndPan() {
     applyZoomTransform(true);
   });
 
-  // 4) Zoom Control Buttons (+ / - / 100%)
+  // 4) Tablet & Smartphone Touch Support (2-Finger Pinch Zoom, 1-Finger Pan, Double-Tap Zoom, 1-Finger Swipe Step)
+  viewport.addEventListener(
+    'touchstart',
+    (e) => {
+      if (e.target.closest('button')) return;
+
+      if (e.touches.length === 2) {
+        // Start 2-finger pinch zoom
+        e.preventDefault();
+        zoomState.isPinching = true;
+        zoomState.isDragging = false;
+        zoomState.isSwiping = false;
+        zoomState.initialPinchDistance = getTouchDistance(e.touches);
+        zoomState.initialPinchScale = zoomState.scale;
+        zoomState.pinchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        zoomState.pinchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      } else if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const now = Date.now();
+
+        // Check Double-Tap to Zoom (within 300ms)
+        if (now - zoomState.lastTapTime < 300) {
+          e.preventDefault();
+          zoomState.lastTapTime = 0;
+          if (zoomState.scale > 1.05) {
+            resetZoom(true);
+          } else {
+            setZoomScale(2.3, touch.clientX, touch.clientY, true);
+          }
+          return;
+        }
+        zoomState.lastTapTime = now;
+
+        if (zoomState.scale > 1.02) {
+          // 1-Finger Pan when zoomed in
+          zoomState.isDragging = true;
+          zoomState.isSwiping = false;
+          zoomState.startX = touch.clientX - zoomState.panX;
+          zoomState.startY = touch.clientY - zoomState.panY;
+        } else {
+          // 1-Finger Swipe to change step when at 1x scale
+          zoomState.isSwiping = true;
+          zoomState.swipeStartX = touch.clientX;
+          zoomState.swipeStartY = touch.clientY;
+        }
+      }
+    },
+    { passive: false }
+  );
+
+  viewport.addEventListener(
+    'touchmove',
+    (e) => {
+      if (zoomState.isPinching && e.touches.length === 2) {
+        e.preventDefault();
+        const currentDist = getTouchDistance(e.touches);
+        if (zoomState.initialPinchDistance > 0) {
+          const newScale = zoomState.initialPinchScale * (currentDist / zoomState.initialPinchDistance);
+          setZoomScale(newScale, zoomState.pinchCenterX, zoomState.pinchCenterY, false);
+        }
+      } else if (zoomState.isDragging && e.touches.length === 1 && zoomState.scale > 1.02) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        zoomState.panX = touch.clientX - zoomState.startX;
+        zoomState.panY = touch.clientY - zoomState.startY;
+        applyZoomTransform(false);
+      }
+    },
+    { passive: false }
+  );
+
+  viewport.addEventListener('touchend', (e) => {
+    if (zoomState.isPinching && e.touches.length < 2) {
+      zoomState.isPinching = false;
+      if (zoomState.scale < 1.05) {
+        resetZoom(true);
+      } else {
+        applyZoomTransform(true);
+      }
+    }
+
+    if (zoomState.isDragging && e.touches.length === 0) {
+      zoomState.isDragging = false;
+      applyZoomTransform(true);
+    }
+
+    // Handle 1-finger horizontal swipe when not zoomed in
+    if (zoomState.isSwiping && e.changedTouches.length === 1 && zoomState.scale <= 1.02) {
+      zoomState.isSwiping = false;
+      const dx = e.changedTouches[0].clientX - zoomState.swipeStartX;
+      const dy = e.changedTouches[0].clientY - zoomState.swipeStartY;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
+        if (!cat) return;
+        if (dx < 0 && state.activeSlideIndex < cat.steps.length - 1) {
+          goToStep(state.activeSlideIndex + 1);
+        } else if (dx > 0 && state.activeSlideIndex > 0) {
+          goToStep(state.activeSlideIndex - 1);
+        }
+      }
+    }
+  });
+
+  // 5) Floating Quick Zoom Preset Buttons (1x, 2x, 3x, +, -)
+  document.getElementById('btn-zoom-1x')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    resetZoom(true);
+  });
+  document.getElementById('btn-zoom-2x')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomState.panX = 0;
+    zoomState.panY = 0;
+    setZoomScale(2.2, null, null, true);
+  });
+  document.getElementById('btn-zoom-3x')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomState.panX = 0;
+    zoomState.panY = 0;
+    setZoomScale(3.2, null, null, true);
+  });
   document.getElementById('btn-zoom-in')?.addEventListener('click', (e) => {
     e.stopPropagation();
-    zoomByStep(0.35);
+    zoomByStep(0.4);
   });
   document.getElementById('btn-zoom-out')?.addEventListener('click', (e) => {
     e.stopPropagation();
-    zoomByStep(-0.35);
-  });
-  document.getElementById('btn-zoom-reset')?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    resetZoom(true);
+    zoomByStep(-0.4);
   });
 }
 
@@ -483,10 +655,12 @@ function updateThemeUI() {
   if (metaTheme) {
     metaTheme.setAttribute('content', isDark ? '#030712' : '#f8fafc');
   }
-  const iconBox = document.getElementById('theme-icon-box');
-  const labelText = document.getElementById('theme-label-text');
-  if (iconBox) iconBox.innerHTML = isDark ? ICONS.sun : ICONS.moon;
-  if (labelText) labelText.textContent = isDark ? 'พื้นหลังสว่าง' : 'พื้นหลังมืด';
+  document.querySelectorAll('.theme-icon-box').forEach((el) => {
+    el.innerHTML = isDark ? ICONS.sun : ICONS.moon;
+  });
+  document.querySelectorAll('.theme-label-text').forEach((el) => {
+    el.textContent = isDark ? 'พื้นหลังสว่าง' : 'พื้นหลังมืด';
+  });
 }
 
 function toggleTheme() {
@@ -573,38 +747,37 @@ function goToStep(newIndex) {
 // Rendering
 // ============================================================================
 function renderApp(direction = 'next') {
+  const mainHeader = document.getElementById('main-site-header');
   const homeView = document.getElementById('home-view');
   const stepViewer = document.getElementById('step-viewer');
-  const headerBackBtn = document.getElementById('btn-header-back-home');
-  const headerMainTitle = document.getElementById('header-main-title');
-  const headerSubTitle = document.getElementById('header-sub-title');
-  const prevBtn = document.getElementById('btn-prev-step');
-  const nextBtn = document.getElementById('btn-next-step');
+  const prevBtnDesktop = document.getElementById('btn-prev-step-desktop');
+  const nextBtnDesktop = document.getElementById('btn-next-step-desktop');
 
   if (!homeView || !stepViewer) return;
 
   if (state.activeCategoryId === null) {
     document.body.classList.remove('h-dvh', 'overflow-hidden');
-    headerBackBtn?.classList.add('hidden');
-    prevBtn?.classList.add('hidden');
-    nextBtn?.classList.add('hidden');
-    if (headerMainTitle) headerMainTitle.textContent = 'คู่มือพนักงานขาย (ร้านมรุกข)';
-    if (headerSubTitle) headerSubTitle.textContent = 'ระบบส่งพัสดุ Zwiz & Shippop';
+    mainHeader?.classList.remove('hidden');
+    prevBtnDesktop?.classList.add('hidden');
+    prevBtnDesktop?.classList.remove('lg:flex');
+    nextBtnDesktop?.classList.add('hidden');
+    nextBtnDesktop?.classList.remove('lg:flex');
 
     stepViewer.classList.add('hidden');
     homeView.classList.remove('hidden');
     renderHomeView(homeView);
   } else {
+    // Fullscreen image-first mode: hide main site header so 100% of vertical space goes to Step Viewer
     document.body.classList.add('h-dvh', 'overflow-hidden');
-    headerBackBtn?.classList.remove('hidden');
-    prevBtn?.classList.remove('hidden');
-    nextBtn?.classList.remove('hidden');
+    mainHeader?.classList.add('hidden');
+    prevBtnDesktop?.classList.remove('hidden');
+    prevBtnDesktop?.classList.add('hidden', 'lg:flex');
+    nextBtnDesktop?.classList.remove('hidden');
+    nextBtnDesktop?.classList.add('hidden', 'lg:flex');
 
     const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
     if (cat) {
       preloadCategoryImages(cat);
-      if (headerMainTitle) headerMainTitle.textContent = `${cat.number}. ${cat.title}`;
-      if (headerSubTitle) headerSubTitle.textContent = 'หมุนลูกกลิ้งเมาส์เพื่อซูมภาพ • กดปุ่มซ้าย/ขวาเพื่อเปลี่ยนขั้นตอน';
     }
 
     homeView.classList.add('hidden');
@@ -671,7 +844,7 @@ function renderHomeView(container) {
 }
 
 /**
- * 2. อัปเดตหน้าดูขั้นตอนแบบ In-Place พร้อมปุ่มซ้าย-ขวาของภาพ
+ * 2. อัปเดตหน้าดูขั้นตอนแบบ In-Place เน้นภาพใหญ่เต็มจอทั้งบนคอม มือถือ และแท็บเล็ต
  */
 function updateStepViewerInPlace(cat, direction = 'next') {
   if (!cat) {
@@ -695,18 +868,20 @@ function updateStepViewerInPlace(cat, direction = 'next') {
   const copyLabel = document.getElementById('btn-step-copy-label');
   const mainImage = document.getElementById('step-main-image');
   const instructionBox = document.getElementById('step-instruction-box');
-  const prevBtn = document.getElementById('btn-prev-step');
-  const nextBtn = document.getElementById('btn-next-step');
+  const prevBtnDesktop = document.getElementById('btn-prev-step-desktop');
+  const nextBtnDesktop = document.getElementById('btn-next-step-desktop');
+  const prevBtnMobile = document.getElementById('btn-prev-step-mobile');
+  const nextBtnMobile = document.getElementById('btn-next-step-mobile');
   const pillsContainer = document.getElementById('step-number-pills');
 
-  // 1) Update Top Instruction Banner
-  if (badgeCounter) badgeCounter.textContent = `ภาพที่ ${step.stepNumber} จาก ${totalSteps}`;
-  if (titleText) titleText.textContent = `ขั้นตอนที่ ${step.stepNumber} : ${step.title}`;
+  // 1) Update Compact Top Instruction Bar
+  if (badgeCounter) badgeCounter.textContent = `ภาพที่ ${step.stepNumber} / ${totalSteps}`;
+  if (titleText) titleText.textContent = `${step.title}`;
   if (descText) descText.textContent = step.description;
 
   if (tipText) {
     if (step.tip) {
-      tipText.textContent = `จุดสังเกต: ${step.tip}`;
+      tipText.textContent = `💡 ${step.tip}`;
       tipText.classList.remove('hidden');
     } else {
       tipText.classList.add('hidden');
@@ -715,7 +890,7 @@ function updateStepViewerInPlace(cat, direction = 'next') {
 
   if (copyBtn && copyLabel) {
     if (step.copyCommand) {
-      copyLabel.textContent = `กดคัดลอก "${step.copyCommand}"`;
+      copyLabel.textContent = `คัดลอก "${step.copyCommand}"`;
       copyBtn.classList.remove('hidden');
       copyBtn.classList.add('inline-flex');
       copyBtn.onclick = () => copyText(step.copyCommand);
@@ -740,48 +915,84 @@ function updateStepViewerInPlace(cat, direction = 'next') {
     instructionBox.classList.add(direction === 'prev' ? 'animate-step-prev' : 'animate-step-next');
   }
 
-  // 3) LEFT SIDE BUTTON (OUTSIDE #step-viewer): ก่อนหน้า
-  if (prevBtn) {
-    prevBtn.disabled = isFirst;
-    prevBtn.className = `fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[140px] sm:min-h-[180px] rounded-3xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2.5 text-center select-none ${
+  // 3) DESKTOP SIDE BUTTONS (Outside #step-viewer on lg+ screens)
+  if (prevBtnDesktop) {
+    prevBtnDesktop.disabled = isFirst;
+    prevBtnDesktop.className = `hidden lg:flex fixed left-2 top-1/2 -translate-y-1/2 z-40 w-20 xl:w-28 min-h-[140px] xl:min-h-[165px] rounded-2xl border-2 transition-all active:scale-95 flex-col items-center justify-center gap-1.5 p-2 text-center select-none ${
       isFirst
-        ? 'bg-slate-200/80 dark:bg-slate-900/50 text-slate-400 dark:text-slate-700 border-slate-300 dark:border-slate-800 cursor-not-allowed'
+        ? 'bg-slate-800/40 text-slate-600 border-slate-800 cursor-not-allowed'
         : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-xl cursor-pointer'
     }`;
-    prevBtn.innerHTML = `
+    prevBtnDesktop.innerHTML = `
       ${ICONS.arrowLeftBig}
-      <span class="text-base sm:text-2xl font-extrabold leading-tight">ก่อนหน้า</span>
-      <span class="text-xs sm:text-base font-bold opacity-80">${!isFirst ? `(ภาพที่ ${step.stepNumber - 1})` : '(ภาพแรก)'}</span>
+      <span class="text-base xl:text-xl font-extrabold leading-tight">ก่อนหน้า</span>
+      <span class="text-xs xl:text-sm font-bold opacity-80">${!isFirst ? `(ภาพที่ ${step.stepNumber - 1})` : '(ภาพแรก)'}</span>
     `;
-    prevBtn.onclick = () => {
+    prevBtnDesktop.onclick = () => {
       if (!isFirst) goToStep(state.activeSlideIndex - 1);
     };
   }
 
-  // 4) RIGHT SIDE BUTTON (OUTSIDE #step-viewer): ถัดไป (หรือ เสร็จสิ้น)
-  if (nextBtn) {
+  if (nextBtnDesktop) {
     if (!isLast) {
-      nextBtn.className =
-        'fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[140px] sm:min-h-[180px] rounded-3xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/30 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2.5 text-center select-none cursor-pointer';
-      nextBtn.innerHTML = `
+      nextBtnDesktop.className =
+        'hidden lg:flex fixed right-2 top-1/2 -translate-y-1/2 z-40 w-20 xl:w-28 min-h-[140px] xl:min-h-[165px] rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/30 transition-all active:scale-95 flex-col items-center justify-center gap-1.5 p-2 text-center select-none cursor-pointer';
+      nextBtnDesktop.innerHTML = `
         ${ICONS.arrowRightBig}
-        <span class="text-base sm:text-2xl font-extrabold leading-tight">ถัดไป</span>
-        <span class="text-xs sm:text-base font-bold text-indigo-100">(ภาพที่ ${step.stepNumber + 1})</span>
+        <span class="text-base xl:text-xl font-extrabold leading-tight">ถัดไป</span>
+        <span class="text-xs xl:text-sm font-bold text-indigo-100">(ภาพที่ ${step.stepNumber + 1})</span>
       `;
-      nextBtn.onclick = () => goToStep(state.activeSlideIndex + 1);
+      nextBtnDesktop.onclick = () => goToStep(state.activeSlideIndex + 1);
     } else {
-      nextBtn.className =
-        'fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[140px] sm:min-h-[180px] rounded-3xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xl shadow-emerald-500/30 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2.5 text-center select-none cursor-pointer';
-      nextBtn.innerHTML = `
+      nextBtnDesktop.className =
+        'hidden lg:flex fixed right-2 top-1/2 -translate-y-1/2 z-40 w-20 xl:w-28 min-h-[140px] xl:min-h-[165px] rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xl shadow-emerald-500/30 transition-all active:scale-95 flex-col items-center justify-center gap-1.5 p-2 text-center select-none cursor-pointer';
+      nextBtnDesktop.innerHTML = `
         ${ICONS.checkBig}
-        <span class="text-base sm:text-2xl font-extrabold leading-tight">เสร็จสิ้น</span>
-        <span class="text-xs sm:text-base font-bold text-emerald-100">(กลับหน้าแรก)</span>
+        <span class="text-base xl:text-xl font-extrabold leading-tight">เสร็จสิ้น</span>
+        <span class="text-xs xl:text-sm font-bold text-emerald-100">(กลับหน้าแรก)</span>
       `;
-      nextBtn.onclick = () => openHomeList();
+      nextBtnDesktop.onclick = () => openHomeList();
     }
   }
 
-  // 5) Bottom Number Pills (1 2 3 ... 11)
+  // 4) MOBILE / TABLET BOTTOM BUTTONS (< 1024px so image uses 100% screen width!)
+  if (prevBtnMobile) {
+    prevBtnMobile.disabled = isFirst;
+    prevBtnMobile.className = `lg:hidden h-11 sm:h-12 px-3 sm:px-5 rounded-xl text-sm sm:text-lg font-extrabold border-2 transition active:scale-95 flex items-center justify-center gap-1.5 shrink-0 ${
+      isFirst
+        ? 'bg-slate-100 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-800 cursor-not-allowed'
+        : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-sm'
+    }`;
+    prevBtnMobile.innerHTML = `
+      ${ICONS.arrowLeftSm}
+      <span>ก่อนหน้า</span>
+    `;
+    prevBtnMobile.onclick = () => {
+      if (!isFirst) goToStep(state.activeSlideIndex - 1);
+    };
+  }
+
+  if (nextBtnMobile) {
+    if (!isLast) {
+      nextBtnMobile.className =
+        'lg:hidden h-11 sm:h-12 px-3.5 sm:px-5 rounded-xl text-sm sm:text-lg font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition active:scale-95 flex items-center justify-center gap-1.5 shrink-0';
+      nextBtnMobile.innerHTML = `
+        <span>ถัดไป (${step.stepNumber + 1})</span>
+        ${ICONS.arrowRightSm}
+      `;
+      nextBtnMobile.onclick = () => goToStep(state.activeSlideIndex + 1);
+    } else {
+      nextBtnMobile.className =
+        'lg:hidden h-11 sm:h-12 px-3.5 sm:px-5 rounded-xl text-sm sm:text-lg font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition active:scale-95 flex items-center justify-center gap-1.5 shrink-0';
+      nextBtnMobile.innerHTML = `
+        ${ICONS.checkSm}
+        <span>เสร็จสิ้น</span>
+      `;
+      nextBtnMobile.onclick = () => openHomeList();
+    }
+  }
+
+  // 5) Bottom Number Pills (1 2 3 ... 11) with Auto-Scroll to Active Pill
   if (pillsContainer) {
     pillsContainer.innerHTML = cat.steps
       .map(
@@ -789,7 +1000,7 @@ function updateStepViewerInPlace(cat, direction = 'next') {
       <button
         type="button"
         data-jump-index="${i}"
-        class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl text-sm sm:text-lg font-extrabold border-2 transition-all active:scale-95 ${
+        class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm sm:text-base font-extrabold border-2 transition-all active:scale-95 shrink-0 ${
           i === state.activeSlideIndex
             ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-105'
             : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-indigo-500'
@@ -807,6 +1018,11 @@ function updateStepViewerInPlace(cat, direction = 'next') {
         goToStep(idx);
       });
     });
+
+    const activePill = pillsContainer.querySelector(`[data-jump-index="${state.activeSlideIndex}"]`);
+    if (activePill) {
+      activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
   }
 }
 
@@ -843,12 +1059,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updateThemeUI();
-  setupMouseZoomAndPan();
+  setupMouseAndTouchZoom();
   renderApp();
 
   document.getElementById('btn-brand-home')?.addEventListener('click', () => openHomeList());
   document.getElementById('btn-header-back-home')?.addEventListener('click', () => openHomeList());
-  document.getElementById('btn-theme-toggle')?.addEventListener('click', toggleTheme);
+  document.getElementById('btn-theme-toggle-home')?.addEventListener('click', toggleTheme);
+  document.getElementById('btn-theme-toggle-viewer')?.addEventListener('click', toggleTheme);
 
   // Keyboard support
   window.addEventListener('keydown', (e) => {
