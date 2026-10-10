@@ -578,12 +578,16 @@ function renderApp(direction = 'next') {
   const headerBackBtn = document.getElementById('btn-header-back-home');
   const headerMainTitle = document.getElementById('header-main-title');
   const headerSubTitle = document.getElementById('header-sub-title');
+  const prevBtn = document.getElementById('btn-prev-step');
+  const nextBtn = document.getElementById('btn-next-step');
 
   if (!homeView || !stepViewer) return;
 
   if (state.activeCategoryId === null) {
     document.body.classList.remove('h-dvh', 'overflow-hidden');
     headerBackBtn?.classList.add('hidden');
+    prevBtn?.classList.add('hidden');
+    nextBtn?.classList.add('hidden');
     if (headerMainTitle) headerMainTitle.textContent = 'คู่มือพนักงานขาย (ร้านมรุกข)';
     if (headerSubTitle) headerSubTitle.textContent = 'ระบบส่งพัสดุ Zwiz & Shippop';
 
@@ -593,6 +597,8 @@ function renderApp(direction = 'next') {
   } else {
     document.body.classList.add('h-dvh', 'overflow-hidden');
     headerBackBtn?.classList.remove('hidden');
+    prevBtn?.classList.remove('hidden');
+    nextBtn?.classList.remove('hidden');
 
     const cat = MANUAL_CATEGORIES.find((c) => c.id === state.activeCategoryId);
     if (cat) {
@@ -734,13 +740,13 @@ function updateStepViewerInPlace(cat, direction = 'next') {
     instructionBox.classList.add(direction === 'prev' ? 'animate-step-prev' : 'animate-step-next');
   }
 
-  // 3) LEFT SIDE BUTTON: ก่อนหน้า
+  // 3) LEFT SIDE BUTTON (OUTSIDE #step-viewer): ก่อนหน้า
   if (prevBtn) {
     prevBtn.disabled = isFirst;
-    prevBtn.className = `w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none ${
+    prevBtn.className = `fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[140px] sm:min-h-[180px] rounded-3xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2.5 text-center select-none ${
       isFirst
-        ? 'bg-slate-200/70 dark:bg-slate-900/40 text-slate-400 dark:text-slate-700 border-slate-300 dark:border-slate-800 cursor-not-allowed'
-        : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-md cursor-pointer'
+        ? 'bg-slate-200/80 dark:bg-slate-900/50 text-slate-400 dark:text-slate-700 border-slate-300 dark:border-slate-800 cursor-not-allowed'
+        : 'bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border-slate-400 dark:border-slate-600 shadow-xl cursor-pointer'
     }`;
     prevBtn.innerHTML = `
       ${ICONS.arrowLeftBig}
@@ -752,11 +758,11 @@ function updateStepViewerInPlace(cat, direction = 'next') {
     };
   }
 
-  // 4) RIGHT SIDE BUTTON: ถัดไป (หรือ เสร็จสิ้น)
+  // 4) RIGHT SIDE BUTTON (OUTSIDE #step-viewer): ถัดไป (หรือ เสร็จสิ้น)
   if (nextBtn) {
     if (!isLast) {
       nextBtn.className =
-        'w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/25 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none cursor-pointer';
+        'fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[140px] sm:min-h-[180px] rounded-3xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/30 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2.5 text-center select-none cursor-pointer';
       nextBtn.innerHTML = `
         ${ICONS.arrowRightBig}
         <span class="text-base sm:text-2xl font-extrabold leading-tight">ถัดไป</span>
@@ -765,7 +771,7 @@ function updateStepViewerInPlace(cat, direction = 'next') {
       nextBtn.onclick = () => goToStep(state.activeSlideIndex + 1);
     } else {
       nextBtn.className =
-        'w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/25 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none cursor-pointer';
+        'fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[140px] sm:min-h-[180px] rounded-3xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xl shadow-emerald-500/30 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2.5 text-center select-none cursor-pointer';
       nextBtn.innerHTML = `
         ${ICONS.checkBig}
         <span class="text-base sm:text-2xl font-extrabold leading-tight">เสร็จสิ้น</span>

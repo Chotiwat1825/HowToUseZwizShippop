@@ -157,12 +157,31 @@
   </main>
 
   <!-- =============================================================== -->
-  <!-- 2. STEP VIEWER: LEFT/RIGHT GIANT BUTTONS + MOUSE WHEEL ZOOM     -->
+  <!-- GIANT PREV / NEXT BUTTONS OUTSIDE #step-viewer                  -->
   <!-- =============================================================== -->
-  <main id="step-viewer" class="hidden flex-1 flex flex-col max-w-7xl w-full mx-auto px-2 sm:px-5 py-2 sm:py-3 overflow-hidden">
+  <button
+    type="button"
+    id="btn-prev-step"
+    class="hidden fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[130px] sm:min-h-[170px] rounded-3xl border-2 transition-all active:scale-95 flex-col items-center justify-center gap-2 p-2.5 text-center select-none"
+  >
+    <!-- Populated dynamically -->
+  </button>
+
+  <button
+    type="button"
+    id="btn-next-step"
+    class="hidden fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-20 sm:w-28 lg:w-36 min-h-[130px] sm:min-h-[170px] rounded-3xl transition-all active:scale-95 flex-col items-center justify-center gap-2 p-2.5 text-center select-none"
+  >
+    <!-- Populated dynamically -->
+  </button>
+
+  <!-- =============================================================== -->
+  <!-- 2. STEP VIEWER: FULL WIDTH & HEIGHT FOR MAXIMUM IMAGE SIZE      -->
+  <!-- =============================================================== -->
+  <main id="step-viewer" class="hidden flex-1 flex flex-col w-full px-24 sm:px-32 lg:px-44 py-2 sm:py-3 overflow-hidden">
     
     <!-- Top Instruction Banner -->
-    <div id="step-instruction-box" class="shrink-0 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 shadow-sm mb-2">
+    <div id="step-instruction-box" class="shrink-0 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-2 sm:px-5 sm:py-2.5 shadow-sm mb-2">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0 flex-1">
           <span id="step-badge-counter" class="px-3.5 py-1 rounded-xl bg-indigo-600 text-white text-sm sm:text-lg font-extrabold shrink-0">
@@ -196,78 +215,55 @@
     </div>
 
     <!-- ============================================================= -->
-    <!-- MIDDLE ROW: [GIANT PREV BTN] + [ZOOMABLE IMAGE] + [GIANT NEXT]-->
+    <!-- CENTER: FULL-WIDTH INTERACTIVE MOUSE-ZOOMABLE IMAGE VIEWPORT  -->
     <!-- ============================================================= -->
-    <div class="flex-1 min-h-0 flex items-stretch gap-2 sm:gap-3">
-      
-      <!-- LEFT SIDE: GIANT PREVIOUS BUTTON -->
-      <button
-        type="button"
-        id="btn-prev-step"
-        class="w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none"
-      >
-        <!-- Populated dynamically -->
-      </button>
-
-      <!-- CENTER: INTERACTIVE MOUSE-ZOOMABLE IMAGE VIEWPORT -->
+    <div
+      id="step-image-viewport"
+      class="flex-1 min-w-0 min-h-0 relative bg-slate-200/90 dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl flex items-center justify-center p-1 sm:p-2 overflow-hidden select-none cursor-zoom-in"
+    >
       <div
-        id="step-image-viewport"
-        class="flex-1 min-w-0 min-h-0 relative bg-slate-200/90 dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-800 rounded-2xl flex items-center justify-center p-1.5 sm:p-2 overflow-hidden select-none cursor-zoom-in"
+        id="step-zoom-layer"
+        class="w-full h-full flex items-center justify-center transition-transform duration-75 ease-out origin-center"
       >
-        <div
-          id="step-zoom-layer"
-          class="w-full h-full flex items-center justify-center transition-transform duration-75 ease-out origin-center"
-        >
-          <img
-            id="step-main-image"
-            src=""
-            alt=""
-            draggable="false"
-            class="max-h-full max-w-full w-auto h-auto object-contain rounded-xl bg-white shadow-sm select-none pointer-events-none"
-          />
-        </div>
-
-        <!-- Floating Zoom Controls Bar (Bottom Right inside Image) -->
-        <div class="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 bg-slate-900/90 text-white px-2.5 py-1.5 rounded-xl shadow-lg border border-slate-700">
-          <span class="hidden lg:inline text-xs font-bold text-slate-300 mr-1">
-            หมุนลูกกลิ้งเมาส์เพื่อซูม:
-          </span>
-          <button
-            type="button"
-            id="btn-zoom-out"
-            class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
-            title="ซูมออก"
-          >
-            −
-          </button>
-          <button
-            type="button"
-            id="btn-zoom-reset"
-            class="px-2.5 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm font-extrabold text-amber-300 flex items-center justify-center active:scale-95 transition"
-            title="คลิกเพื่อรีเซ็ตขนาดภาพ 100%"
-          >
-            100%
-          </button>
-          <button
-            type="button"
-            id="btn-zoom-in"
-            class="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
-            title="ซูมเข้า"
-          >
-            +
-          </button>
-        </div>
+        <img
+          id="step-main-image"
+          src=""
+          alt=""
+          draggable="false"
+          class="max-h-full max-w-full w-auto h-auto object-contain rounded-xl bg-white shadow-sm select-none pointer-events-none"
+        />
       </div>
 
-      <!-- RIGHT SIDE: GIANT NEXT / FINISH BUTTON -->
-      <button
-        type="button"
-        id="btn-next-step"
-        class="w-20 sm:w-32 md:w-40 shrink-0 rounded-2xl transition-all active:scale-95 flex flex-col items-center justify-center gap-2 p-2 text-center select-none"
-      >
-        <!-- Populated dynamically -->
-      </button>
-
+      <!-- Floating Zoom Controls Bar (Bottom Right inside Image) -->
+      <div class="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 bg-slate-900/90 text-white px-2.5 py-1.5 rounded-xl shadow-lg border border-slate-700">
+        <span class="hidden md:inline text-xs font-bold text-slate-300 mr-1">
+          หมุนลูกกลิ้งเมาส์เพื่อซูม:
+        </span>
+        <button
+          type="button"
+          id="btn-zoom-out"
+          class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
+          title="ซูมออก"
+        >
+          −
+        </button>
+        <button
+          type="button"
+          id="btn-zoom-reset"
+          class="px-2.5 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm font-extrabold text-amber-300 flex items-center justify-center active:scale-95 transition"
+          title="คลิกเพื่อรีเซ็ตขนาดภาพ 100%"
+        >
+          100%
+        </button>
+        <button
+          type="button"
+          id="btn-zoom-in"
+          class="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-lg flex items-center justify-center active:scale-90 transition"
+          title="ซูมเข้า"
+        >
+          +
+        </button>
+      </div>
     </div>
 
     <!-- ============================================================= -->
